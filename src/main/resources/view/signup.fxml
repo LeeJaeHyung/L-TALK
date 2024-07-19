@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+
+<AnchorPane fx:id="acp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: #FEE500;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ltalk.controller.SignUpController">
+   <children>
+       <ImageView fitHeight="150.0" fitWidth="174.0" layoutX="139.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+           <image>
+               <Image url="/images/LTalkIcon.png" />
+           </image>
+       </ImageView>
+       <Button fx:id="closeButton" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0" style="-fx-background-color: #FEE500;" />
+         <ImageView fitHeight="10.0" fitWidth="10.0" layoutX="379.0" layoutY="10.0">
+             <image>
+                 <Image url="/images/close.png" />
+             </image>
+         </ImageView>
+   </children>
+</AnchorPane>

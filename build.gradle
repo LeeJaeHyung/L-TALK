@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+group = 'com.ltalk'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //javafx
+    implementation 'org.openjfx:javafx-controls:17.0.6'
+    implementation 'org.openjfx:javafx-fxml:17.0.6'
+
+    //lombok
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    //sql + JPA
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'org.hibernate:hibernate-core:5.6.14.Final'
+
+    //junit
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+application {
+    mainClass.set('com.ltalk.Main') // mainClass의 set 메소드 사용
+}
+
+javafx {
+    version = '17.0.6'
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+// JavaFX runtime arguments 설정
+tasks.withType(JavaExec) {
+    if (project.hasProperty('mainClass')) {
+        mainClass.set(project.property('mainClass'))
+    }
+    jvmArgs = [
+            '--module-path', configurations.runtimeClasspath.asPath,
+            '--add-modules', 'javafx.controls,javafx.fxml'
+    ]
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+}
