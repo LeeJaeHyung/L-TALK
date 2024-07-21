@@ -19,5 +19,6 @@
                  <Image url="/images/close.png" />
              </image>
          </ImageView>
+       <Button fx:id="submitButton">회원가입</Button>
    </children>
 </AnchorPane>
