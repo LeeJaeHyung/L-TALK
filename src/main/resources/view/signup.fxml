@@ -19,6 +19,28 @@
                  <Image url="/images/close.png" />
              </image>
          </ImageView>
-       <Button fx:id="submitButton">회원가입</Button>
+       <Button fx:id="submitButton" layoutX="168.0" layoutY="533.0">회원가입</Button>
+      <VBox layoutX="71.0" layoutY="208.0" prefHeight="272.0" prefWidth="266.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label alignment="CENTER" prefWidth="100.0" text="아이디" />
+                  <TextField fx:id="idField"/>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label alignment="CENTER" prefWidth="100.0" text="비밀번호" />
+                  <PasswordField fx:id="passwordField"/>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label alignment="CENTER" prefWidth="100.0" text="이메일" />
+                  <TextField fx:id="emailField"/>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

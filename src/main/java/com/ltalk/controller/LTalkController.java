@@ -1,7 +1,5 @@
 package com.ltalk.controller;
 
-import com.ltalk.entity.Member;
-import com.ltalk.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,14 +12,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -57,6 +50,7 @@ public class LTalkController  implements Initializable {
         stageMove();
         hideButton();
         enterEvent();
+        loginButtonEvent();
         singUpEvent(primaryStage);
         closeButton.setOnAction(event -> Platform.exit());
     }
@@ -91,8 +85,7 @@ public class LTalkController  implements Initializable {
         passwordField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ENTER){
                 if(!idField.getText().equals("")){
-                    login();
-                    testConnection();
+                  login();
                 }else{
                     idField.requestFocus();
                 }
@@ -100,42 +93,24 @@ public class LTalkController  implements Initializable {
         });
     }
 
+    private void loginButtonEvent(){
+        loginButton.setOnMouseClicked(event -> {
+            login();
+        });
+    }
+
     private void login(){
-
-    }
-
-    private void testConnection(){
-        System.out.println("테스트 실행");
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ltalk");
-
-        EntityManager em = emf.createEntityManager();
-
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-
         try {
-            Member member = new Member();
-            member.setUsername("lese");
-            member.setPassword("1234sd56");
-            em.persist(member);
-            tx.commit();
-        } catch (Exception e) {
-            tx.rollback();
-            e.printStackTrace();
-        } finally {
-            em.close();
+            SocketController.getInstance().login(idField.getText(),passwordField.getText());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        emf.close();
-        System.out.println("처리완료");
-
     }
+
+
 
     private void singUpEvent(Stage ownerStage){
         signUpButton.setOnMouseClicked(event -> {
-            Label message = new Label("This is a popup window!");
-            Button closeButton = new Button("Close");
-            VBox popupLayout = new VBox(10, message, closeButton);
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/signup.fxml"));
             Scene popupScene;
             Stage popup = new Stage();
@@ -150,7 +125,6 @@ public class LTalkController  implements Initializable {
             popup.initOwner(ownerStage); // 소유자 창 설정
             popup.setScene(popupScene);
             popup.initModality(javafx.stage.Modality.APPLICATION_MODAL); // 모달 창 설정
-            closeButton.setOnAction(e -> popup.close());
             popup.show();
         });
     }
