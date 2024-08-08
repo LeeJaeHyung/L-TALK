@@ -1,17 +1,12 @@
 package com.ltalk.util;
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class StageUtil {
 
@@ -22,12 +17,24 @@ public class StageUtil {
         stage.getIcons().add(new Image("/images/LTalkIcon.png"));
     }
 
-    public void importBasicsEvent(AnchorPane acp, Stage stage, Button closeButton){
+    public void importBasicsEvent(AnchorPane acp, Stage stage, Button closeButton, boolean isMain){
         stageMove(acp, stage);
-        closeButton.setOnAction(event -> {
-            stage.close();
-        });
+        if(isMain){
+            closeButton.setOnAction(event -> {
+                Platform.exit();
+            });
+        }else{
+            closeButton.setOnAction(event -> {
+                stage.close();
+            });
+        }
+        closeButton.setCursor(Cursor.HAND);
     }
+
+    public void hideButton(Button hideButton, AnchorPane acp) {
+        hideButton.setOnAction(event -> {Stage stage = (Stage) acp.getScene().getWindow(); stage.setIconified(true);});
+    }
+
 
     private void stageMove(AnchorPane acp, Stage stage) {
         if(stage != null){

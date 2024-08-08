@@ -1,5 +1,6 @@
 package com.ltalk.controller;
 
+import com.ltalk.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,15 +45,16 @@ public class LTalkController  implements Initializable {
     private double x = 0;
     private double y = 0;
     private Stage stage;
+    private StageUtil stageUtil = new StageUtil();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         stageMove();
-        hideButton();
         enterEvent();
         loginButtonEvent();
         singUpEvent(primaryStage);
-        closeButton.setOnAction(event -> Platform.exit());
+        stageUtil.importBasicsEvent(acp, stage, closeButton,true);
+        stageUtil.hideButton(hideButton, acp);
     }
 
     private void stageMove() {//https://ohtanja.tistory.com/90 참고함
@@ -72,9 +74,6 @@ public class LTalkController  implements Initializable {
         });
     }
 
-    private void hideButton() {
-        hideButton.setOnAction(event -> {stage = (Stage) acp.getScene().getWindow(); stage.setIconified(true);});
-    }
 
     private void enterEvent(){
         idField.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
@@ -100,6 +99,7 @@ public class LTalkController  implements Initializable {
     }
 
     private void login(){
+        System.out.println("로그인 요청 전송");
         try {
             SocketController.getInstance().login(idField.getText(),passwordField.getText());
         } catch (IOException e) {

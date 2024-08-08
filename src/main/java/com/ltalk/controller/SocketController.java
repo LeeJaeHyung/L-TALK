@@ -53,10 +53,13 @@ public class SocketController {
     }
 
     private void loginResponse(ServerResponse response) {
+        System.out.println(response.getLoginResponse().getMsg());
         if(response.getSuccess()){
             //메인 화면 보여주기
+            System.out.println("로그인 성공");
         }else{
             //실패 사유 보여주기
+            System.out.println("로그인 실패");
         }
     }
 

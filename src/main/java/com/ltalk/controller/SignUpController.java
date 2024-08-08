@@ -30,7 +30,7 @@ public class SignUpController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        stageutil.importBasicsEvent(acp, singUpStage, closeButton);
+        stageutil.importBasicsEvent(acp, singUpStage, closeButton, false);
         submitButton.setOnMouseClicked(mouseEvent -> {
             try{
                 submit();
