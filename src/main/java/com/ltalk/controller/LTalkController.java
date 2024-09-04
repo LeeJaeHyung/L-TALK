@@ -14,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import static com.ltalk.util.StageUtil.setStageUtil;
 public class LTalkController  implements Initializable {
 
     @Setter
+    @Getter
     private static Stage primaryStage = null;
 
     @FXML

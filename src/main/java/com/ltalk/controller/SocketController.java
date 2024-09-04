@@ -1,15 +1,25 @@
 package com.ltalk.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ltalk.entity.Data;
-import com.ltalk.entity.ProtocolType;
+import com.ltalk.entity.Friend;
+import com.ltalk.enums.ProtocolType;
 import com.ltalk.entity.ServerResponse;
 import com.ltalk.request.LoginRequest;
 import com.ltalk.request.SignupRequest;
+import com.ltalk.util.LocalDateTimeAdapter;
+import com.ltalk.util.StageUtil;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ltalk.Main.threadPool;
 
@@ -21,7 +31,9 @@ public class SocketController {
     private static OutputStream outputStream;
     private final String IP = "localhost";
     private final int PORT = 7623;
-    private Gson gson = new Gson();
+    private Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
     private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     public static SocketController getInstance() {
@@ -44,8 +56,11 @@ public class SocketController {
     }
 
     private void signupResponse(ServerResponse response) {
-        if(response.getSuccess()){
-            SignUpController.singUpStage.close();
+        System.out.println(response.getSuccess()+"<<<");
+        if (response.getSuccess()) {
+            Platform.runLater(() -> {
+                SignUpController.singUpStage.close();
+            });
         }else{
             System.out.println(response.getSignupResponse().getMsg());
             //회원가입 실패 사유 알려주기
@@ -56,6 +71,28 @@ public class SocketController {
         System.out.println(response.getLoginResponse().getMsg());
         if(response.getSuccess()){
             //메인 화면 보여주기
+            List<Friend> freindList = response.getLoginResponse().getFriendList();
+            for (Friend friend : freindList) {
+                System.out.println(friend.getFriend_name());
+            }
+            Platform.runLater(() ->{
+                LTalkController.getPrimaryStage().close();
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/main-view.fxml"));
+                Scene scene = null;
+                MainController.setMember(response.getLoginResponse().getMember());
+                MainController.setFriendList(response.getLoginResponse().getFriendList());
+                Stage stage = new Stage();
+                MainController.setStage(stage);
+                try {
+                    scene = new Scene(fxmlLoader.load(), 360, 590);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                stage.setTitle("L-Talk");
+                stage.setScene(scene);
+                StageUtil.setStageUtil(stage);
+                stage.show();
+            });
             System.out.println("로그인 성공");
         }else{
             //실패 사유 보여주기
@@ -113,7 +150,6 @@ public class SocketController {
         };
         threadPool.submit(runnable);
     }
-
 
 
 

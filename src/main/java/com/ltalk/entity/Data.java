@@ -1,5 +1,6 @@
 package com.ltalk.entity;
 
+import com.ltalk.enums.ProtocolType;
 import com.ltalk.request.ChatRequest;
 import com.ltalk.request.LoginRequest;
 import com.ltalk.request.SignupRequest;

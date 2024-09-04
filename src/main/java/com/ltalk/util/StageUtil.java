@@ -2,6 +2,7 @@ package com.ltalk.util;
 
 import javafx.application.Platform;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -36,19 +37,20 @@ public class StageUtil {
     }
 
 
-    private void stageMove(AnchorPane acp, Stage stage) {
+    public void stageMove(Node node, Stage stage) {
         if(stage != null){
-            acp.setOnMousePressed((event) -> {
+            node.setOnMousePressed((event) -> {
                 x = event.getSceneX();
                 y = event.getSceneY();
             });
 
-            acp.setOnMouseDragged((event) -> {
+            node.setOnMouseDragged((event) -> {
                 stage.setX(event.getScreenX() - x);
                 stage.setY(event.getScreenY() - y);
             });
         }
     }
+
 
 
 }
