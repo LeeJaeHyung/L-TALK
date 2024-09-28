@@ -2,6 +2,7 @@ package com.ltalk.controller;
 
 import com.ltalk.entity.Friend;
 import com.ltalk.entity.Member;
+import com.ltalk.enums.ViewBoxEnum;
 import com.ltalk.util.StageUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -44,7 +45,13 @@ public class MainController implements Initializable {
     @Getter
     @Setter
     private static List<Friend> friendList;
+    private ViewBoxEnum viewBoxEnum;
 
+
+    @FXML
+    private Button friendButton;
+    @FXML
+    private Button chatButton;
     @FXML
     private AnchorPane acp;
     @FXML
@@ -55,6 +62,8 @@ public class MainController implements Initializable {
     private Button hideButton;
     @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private VBox viewVBox;
 
     private VBox friendBox = new VBox();
     private VBox chatBox = new VBox();
@@ -71,8 +80,33 @@ public class MainController implements Initializable {
         stageUtil.importBasicsEvent(acp,stage,closeButton,true);
         stageUtil.stageMove(hBox, stage);
         stageUtil.hideButton(hideButton,acp);
+        chatButtonEvent();
+        friendButtonEvent();
         initVBox();
         setBox(friendBox);
+        viewBoxEnum = ViewBoxEnum.FRIEND;
+    }
+
+    private void friendButtonEvent(){
+        friendButton.setCursor(Cursor.HAND);
+        friendButton.setOnMouseClicked(event -> {
+            System.out.println("friend button clicked");
+            if(viewBoxEnum != ViewBoxEnum.FRIEND){
+                viewVBox = friendBox;
+                viewBoxEnum = ViewBoxEnum.FRIEND;
+            }
+        });
+    }
+
+    private void chatButtonEvent(){
+        chatButton.setCursor(Cursor.HAND);
+        chatButton.setOnMouseClicked(event -> {
+            System.out.println("chat button clicked");
+            if(viewBoxEnum != ViewBoxEnum.CHAT){
+                viewVBox = chatBox;
+                viewBoxEnum = ViewBoxEnum.CHAT;
+            }
+        });
     }
 
     private void setBox(VBox vBox) {
@@ -125,9 +159,10 @@ public class MainController implements Initializable {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/chat-view.fxml"));
                     Scene popupScene;
                     Stage popup = new Stage();
-                    SignUpController.setStage(popup);
                     try {
                         popupScene = new Scene(fxmlLoader.load(), 400, 600);
+                        ChatController chatController = fxmlLoader.getController();
+                        chatController.init(popup);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

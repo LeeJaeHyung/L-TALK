@@ -14,7 +14,7 @@
          <children>
             <VBox alignment="TOP_CENTER" prefHeight="599.0" prefWidth="66.0" spacing="20.0" style="-fx-background-color: #ECECED;">
                <children>
-                  <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                  <Button fx:id="friendButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                      <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -23,7 +23,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                  <Button fx:id="chatButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                      <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -47,7 +47,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="292.0">
                      <children>
-                        <VBox prefHeight="5000.0" prefWidth="292.0" spacing="10.0">
+                        <VBox fx:id="viewVBox" prefHeight="5000.0" prefWidth="292.0" spacing="10.0">
                            <padding>
                               <Insets top="15.0" />
                            </padding>

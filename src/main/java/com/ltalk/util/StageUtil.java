@@ -29,6 +29,7 @@ public class StageUtil {
                 stage.close();
             });
         }
+        System.out.println("stageClose적용완료");
         closeButton.setCursor(Cursor.HAND);
     }
 
