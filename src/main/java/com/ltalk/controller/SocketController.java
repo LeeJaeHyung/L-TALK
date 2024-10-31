@@ -104,6 +104,8 @@ public class SocketController {
     private void chatResponse(ServerResponse response) {
         if(response.getSuccess()){
             //받아온 채팅 추가하는 로직 불러오기
+            System.out.println("수신성공");
+            System.out.println(response.toString());
         }else{
             //채팅 전송 실패 사유
         }
