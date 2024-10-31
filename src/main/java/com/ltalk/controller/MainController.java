@@ -118,6 +118,7 @@ public class MainController implements Initializable {
        initChatBox();
        initFriendBox();
     }
+
     private void initFriendBox() {
         friendBox.setStyle("-fx-background-color: #ffffff");
         ObservableList children = friendBox.getChildren();
@@ -163,10 +164,14 @@ public class MainController implements Initializable {
                         popupScene = new Scene(fxmlLoader.load(), 400, 600);
                         ChatController chatController = fxmlLoader.getController();
                         chatController.init(popup);
+                        chatController.setReceiver(friend);
+                        System.out.println(friend==null);
+                        System.out.println(friend.getFriend_name());
+                        System.out.println("setReceiver ");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    popup.setTitle("L-Talk 회원가입");
+                    popup.setTitle(""+box.getUserData());
                     popup.initOwner(stage); // 소유자 창 설정
                     setStageUtil(popup);
                     popup.setScene(popupScene);

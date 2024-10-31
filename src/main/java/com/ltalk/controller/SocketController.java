@@ -6,6 +6,7 @@ import com.ltalk.entity.Data;
 import com.ltalk.entity.Friend;
 import com.ltalk.enums.ProtocolType;
 import com.ltalk.entity.ServerResponse;
+import com.ltalk.request.ChatRequest;
 import com.ltalk.request.LoginRequest;
 import com.ltalk.request.SignupRequest;
 import com.ltalk.util.LocalDateTimeAdapter;
@@ -115,6 +116,11 @@ public class SocketController {
 
     public void login(String username, String password) throws IOException {
         Data data = new Data(ProtocolType.LOGIN, new LoginRequest(username, password));
+        send(data);
+    }
+
+    public void chat(String receiver, String sender, String message) throws IOException {
+        Data data = new Data(ProtocolType.CHAT, new ChatRequest(receiver, sender, message));
         send(data);
     }
 
