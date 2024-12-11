@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Setter
@@ -26,5 +28,8 @@ public class Member {
 
     @Column(nullable = false, unique = true )
     private String email;
+
+    private Set<ChatRoomMember> chatRooms = new HashSet<>();
+    private Set<Friend> friends = new HashSet<>();
 
 }
