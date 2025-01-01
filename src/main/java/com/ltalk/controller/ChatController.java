@@ -85,7 +85,7 @@ public class ChatController implements Initializable {
 
     private void send() throws IOException {
         System.out.println(textArea.getText());
-        SocketController.getInstance().chat(receiver.getFriend_name(), MainController.getMember().getUsername(), textArea.getText());
+        SocketController.getInstance().chat(receiver.getFriend().getUsername(), MainController.getMember().getUsername(), textArea.getText());
         Platform.runLater(() -> textArea.clear());
     }
 

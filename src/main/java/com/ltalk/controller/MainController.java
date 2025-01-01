@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
+
 import static com.ltalk.util.StageUtil.setStageUtil;
 
 @Getter
@@ -44,7 +46,7 @@ public class MainController implements Initializable {
     public static Member member;
     @Getter
     @Setter
-    private static List<Friend> friendList;
+    private static Set<Friend> friendList;
     private ViewBoxEnum viewBoxEnum;
 
 
@@ -74,7 +76,7 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println(member.getUsername());
         for(Friend friend : friendList) {
-            System.out.println(friend.getFriend_name());
+            System.out.println(friend.getMember().getUsername());
         }
         StageUtil stageUtil = new StageUtil();
         stageUtil.importBasicsEvent(acp,stage,closeButton,true);
@@ -130,7 +132,7 @@ public class MainController implements Initializable {
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.CENTER_LEFT);
             vBox.setSpacing(5);
-            box.setUserData(friend.getFriend_name());
+            box.setUserData(friend.getFriend().getUsername());
             box.setPrefWidth(289);
             box.setAlignment(Pos.CENTER_LEFT);
             box.setSpacing(8);
@@ -139,7 +141,7 @@ public class MainController implements Initializable {
             rec.setArcWidth(25);
             Image im = new Image("file:src/main/resources/images/talk.png");
             rec.setFill(new ImagePattern(im));
-            Label label = new Label(friend.getFriend_name());
+            Label label = new Label(friend.getFriend().getUsername());
             label.setStyle("-fx-background-color: transparent; -fx-font-family: 'Malgun Gothic Bold'; -fx-text-fill: #000000;");
             rec.setCursor(Cursor.HAND);
             rec.setOnMouseClicked(event -> {
@@ -166,7 +168,7 @@ public class MainController implements Initializable {
                         chatController.init(popup);
                         chatController.setReceiver(friend);
                         System.out.println(friend==null);
-                        System.out.println(friend.getFriend_name());
+                        System.out.println(friend.getFriend().getUsername());
                         System.out.println("setReceiver ");
                     } catch (IOException e) {
                         throw new RuntimeException(e);

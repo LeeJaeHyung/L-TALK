@@ -21,6 +21,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static com.ltalk.Main.threadPool;
 
@@ -72,16 +73,16 @@ public class SocketController {
         System.out.println(response.getLoginResponse().getMsg());
         if(response.getSuccess()){
             //메인 화면 보여주기
-            List<Friend> freindList = response.getLoginResponse().getFriendList();
+            Set<Friend> freindList =response.getLoginResponse().getMember().getFriends();
             for (Friend friend : freindList) {
-                System.out.println(friend.getFriend_name());
+                System.out.println(friend.getFriend().getUsername());
             }
             Platform.runLater(() ->{
                 LTalkController.getPrimaryStage().close();
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/main-view.fxml"));
                 Scene scene = null;
                 MainController.setMember(response.getLoginResponse().getMember());
-                MainController.setFriendList(response.getLoginResponse().getFriendList());
+                MainController.setFriendList(response.getLoginResponse().getMember().getFriends());
                 Stage stage = new Stage();
                 MainController.setStage(stage);
                 try {
