@@ -26,7 +26,11 @@ public class StageUtil {
         stageMove(acp, stage);
         if(isMain){
             closeButton.setOnAction(event -> {
-                Platform.exit();
+                try {
+                    disconnect();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             });
         }else{
             closeButton.setOnAction(event -> {
