@@ -41,7 +41,7 @@ public class MainController implements Initializable {
     private static Stage stage;
     @Getter
     @Setter
-    private static Member member;
+    public static Member member;
     @Getter
     @Setter
     private static List<Friend> friendList;

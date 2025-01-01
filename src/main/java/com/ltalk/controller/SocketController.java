@@ -153,12 +153,26 @@ public class SocketController {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    break;
                 }
             }
         };
         threadPool.submit(runnable);
     }
 
+    static public void disconnect() throws IOException {
+        if(inputStream != null){
+            inputStream.close();
+        }
+        if(outputStream != null){
+            outputStream.close();
+        }
+        if(!SOCKET.isClosed()){
+            SOCKET.close();
+        }
+        Platform.exit();
+        threadPool.shutdown();
+    }
 
 
 }

@@ -12,6 +12,7 @@ public class Data {
     ChatRequest chatRequest;
     LoginRequest loginRequest;
     SignupRequest signupRequest;
+    String username;
 
     public Data(ProtocolType protocolType, ChatRequest chatRequest) {
         this.protocolType = protocolType;
@@ -26,5 +27,10 @@ public class Data {
     public Data(ProtocolType protocolType, SignupRequest signupRequest) {
         this.protocolType = protocolType;
         this.signupRequest = signupRequest;
+    }
+
+    public Data(ProtocolType protocolType, String username){
+        this.protocolType = protocolType;
+        this.username = username;
     }
 }

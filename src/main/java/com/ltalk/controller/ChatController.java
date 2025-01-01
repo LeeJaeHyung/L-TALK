@@ -89,7 +89,4 @@ public class ChatController implements Initializable {
         Platform.runLater(() -> textArea.clear());
     }
 
-
-
-
 }
