@@ -1,34 +1,33 @@
 package com.ltalk.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "chat_room")
-public class ChatRoom {
+@Table(name = "chat")
+public class Chat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chatRoomId;
+    private Long chatId;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_room_id", nullable = false)
+    private ChatRoom chatRoom;
 
-    @Column(nullable = false)
-    private Integer participantCount = 0;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String message;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ChatRoomMember> members;
-
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Chat> chats;
 
     @PrePersist
     protected void onCreate() {
@@ -41,5 +40,4 @@ public class ChatRoom {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and setters omitted for brevity
 }
