@@ -9,14 +9,19 @@ import com.mysql.cj.admin.ServerController;
 import javax.sql.RowSet;
 
 import java.io.IOException;
+import java.nio.channels.AsynchronousSocketChannel;
 
 import static com.ltalk.controller.MainController.member;
 import static com.ltalk.controller.SocketController.getInstance;
+import static com.ltalk.controller.SocketController.socketController;
 
 public class ChatService {
-    SocketController socketController = getInstance();
+    SocketController channel = getInstance();
+
+    public ChatService() throws IOException {
+    }
 
     public void getChatList() throws IOException {
-        socketController.send(new Data(ProtocolType.CHAT_LIST, member.getUsername()));
+        socketController.sendData(new Data(ProtocolType.CHAT_LIST, member.getUsername()));
     }
 }

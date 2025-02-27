@@ -28,7 +28,7 @@ public class StageUtil {
             closeButton.setOnAction(event -> {
                 try {
                     disconnect();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             });

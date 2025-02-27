@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ltalk.entity.Data;
 import com.ltalk.entity.Friend;
-import com.ltalk.enums.ProtocolType;
 import com.ltalk.entity.ServerResponse;
+import com.ltalk.enums.ProtocolType;
+import com.ltalk.handler.ConnectionHandler;
+import com.ltalk.handler.WriteHandler;
 import com.ltalk.request.ChatRequest;
 import com.ltalk.request.LoginRequest;
 import com.ltalk.request.SignupRequest;
@@ -16,45 +18,65 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousChannelGroup;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.CompletionHandler;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-import static com.ltalk.Main.threadPool;
 
 public class SocketController {
+    private static AsynchronousChannelGroup group;
+    public static boolean isConnected = false;
 
-    static SocketController socketController;
-    private static final Socket SOCKET = new Socket();
-    private static InputStream inputStream;
-    private static OutputStream outputStream;
-    private final String IP = "localhost";
-    private final int PORT = 7623;
-    private Gson gson = new GsonBuilder()
+    static {
+        try {
+            group = AsynchronousChannelGroup.withFixedThreadPool(4, Executors.defaultThreadFactory());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static AsynchronousSocketChannel channel;
+
+    static {
+        try {
+            channel = AsynchronousSocketChannel.open(group);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static final String SERVER_ADDRESS = "localhost";
+    private static final int SERVER_PORT = 7623;
+    public static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
-    private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static SocketController socketController;
+    public SocketController() throws IOException {
 
-    public static SocketController getInstance() {
+    }
+
+    public static SocketController getInstance() throws IOException {
         if(socketController == null){
             socketController = new SocketController();
             try{
                 socketController.connect();
-                socketController.receive();
-            }catch (IOException e){
+            }catch (IOException | ExecutionException | InterruptedException e){
                 e.printStackTrace();
             }
         }
         return socketController;
     }
 
-    public void connect() throws IOException {
-        SOCKET.connect(new InetSocketAddress(IP, PORT));
-        outputStream=SOCKET.getOutputStream();
-        inputStream=SOCKET.getInputStream();
+    private static void connect() throws IOException, ExecutionException, InterruptedException {
+        channel.connect(new InetSocketAddress(SERVER_ADDRESS, SERVER_PORT), channel, new ConnectionHandler(channel));
     }
 
     private void signupResponse(ServerResponse response) {
@@ -114,65 +136,38 @@ public class SocketController {
 
     public void signup(String username, String password, String email) throws IOException {
         Data data = new Data(ProtocolType.SIGNUP, new SignupRequest(username, password, email));
-        send(data);
+        sendData(data);
     }
 
     public void login(String username, String password) throws IOException {
         Data data = new Data(ProtocolType.LOGIN, new LoginRequest(username, password));
-        send(data);
+        sendData(data);
     }
 
     public void chat(String receiver, String sender, String message) throws IOException {
         Data data = new Data(ProtocolType.CHAT, new ChatRequest(receiver, sender, message));
-        send(data);
+        sendData(data);
     }
 
-    public void send(Data data) throws IOException {
-        String dataString = gson.toJson(data);
-        byte[] buffer = dataString.getBytes();
-        outputStream.write(buffer);
-        outputStream.flush();
+
+    public static void sendData(Data data) {
+        String jsonData = gson.toJson(data);
+        ByteBuffer writeBuffer = ByteBuffer.wrap(jsonData.getBytes());
+        channel.write(writeBuffer, writeBuffer, new WriteHandler(channel,writeBuffer));
     }
 
-    public void receive() throws IOException {
-        Runnable runnable = () -> {
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
-                    byte[] buffer = new byte[1024];
-                    int bufferLength = inputStream.read(buffer);
-                    if(bufferLength == -1) {
-                        System.out.println("["+Thread.currentThread().getName()+"] <= data read Error");
-                    }else{
-                        String dataString = new String(buffer, 0, bufferLength, "UTF-8");
-                        System.out.println("ServerResponse => " + dataString);
-                        ServerResponse response = gson.fromJson(dataString, ServerResponse.class);
-                        switch (response.getProtocolType()) {
-                            case CHAT -> chatResponse(response);
-                            case LOGIN -> loginResponse(response);
-                            case SIGNUP -> signupResponse(response);
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    break;
-                }
+
+
+    public static void disconnect() {
+        if (isConnected) {
+            try {
+                group.shutdownNow();
+                channel.close();
+                System.out.println("서버와 연결이 종료되었습니다.");
+            } catch (IOException e) {
+                System.err.println("연결 종료 중 오류 발생: " + e.getMessage());
             }
-        };
-        threadPool.submit(runnable);
-    }
-
-    static public void disconnect() throws IOException {
-        if(inputStream != null){
-            inputStream.close();
         }
-        if(outputStream != null){
-            outputStream.close();
-        }
-        if(!SOCKET.isClosed()){
-            SOCKET.close();
-        }
-        Platform.exit();
-        threadPool.shutdown();
     }
 
 

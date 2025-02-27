@@ -1,0 +1,45 @@
+package com.ltalk.handler;
+
+import com.ltalk.controller.SocketController;
+import com.ltalk.entity.ServerResponse;
+
+import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.channels.CompletionHandler;
+
+public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
+
+    private final AsynchronousSocketChannel channel;
+
+    public ReadHandler(AsynchronousSocketChannel channel) {
+        this.channel = channel;
+        receiveResponse();
+    }
+
+    private void receiveResponse() {
+        ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+        channel.read(readBuffer, readBuffer, this);
+    }
+
+    @Override
+    public void completed(Integer bytesRead, ByteBuffer buffer) {
+        if (bytesRead == -1) {
+            System.out.println("서버가 연결을 종료했습니다.");
+            return;
+        }
+
+        buffer.flip();
+        String responseJson = new String(buffer.array(), 0, bytesRead);
+        System.out.println("서버 응답 JSON: " + responseJson);
+        ServerResponse responseData = SocketController.gson.fromJson(responseJson, ServerResponse.class);
+        System.out.println("서버 응답 객체: " + responseData);
+
+        receiveResponse();
+    }
+
+    @Override
+    public void failed(Throwable exc, ByteBuffer buffer) {
+        System.err.println("서버 응답 수신 실패: " + exc.getMessage());
+    }
+}
+
