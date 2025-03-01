@@ -9,31 +9,36 @@ import com.ltalk.enums.ProtocolType;
 import com.ltalk.handler.ConnectionHandler;
 import com.ltalk.handler.WriteHandler;
 import com.ltalk.request.ChatRequest;
+import com.ltalk.request.DisconnectRequest;
 import com.ltalk.request.LoginRequest;
 import com.ltalk.request.SignupRequest;
+import com.ltalk.service.DataService;
+import com.ltalk.service.SocketService;
 import com.ltalk.util.LocalDateTimeAdapter;
 import com.ltalk.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousSocketChannel;
-import java.nio.channels.CompletionHandler;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 
 public class SocketController {
     private static AsynchronousChannelGroup group;
     public static boolean isConnected = false;
+    public SocketService socketService = new SocketService();
+    public DataService dataService = new DataService();
 
     static {
         try {
@@ -43,6 +48,7 @@ public class SocketController {
         }
     }
 
+    @Getter
     private static AsynchronousSocketChannel channel;
 
     static {
@@ -53,8 +59,8 @@ public class SocketController {
         }
     }
 
-    private static final String SERVER_ADDRESS = "localhost";
-    private static final int SERVER_PORT = 7623;
+    public static final String SERVER_ADDRESS = "localhost";
+    public static final int SERVER_PORT = 7623;
     public static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
@@ -75,13 +81,13 @@ public class SocketController {
         return socketController;
     }
 
-    private static void connect() throws IOException, ExecutionException, InterruptedException {
-        channel.connect(new InetSocketAddress(SERVER_ADDRESS, SERVER_PORT), channel, new ConnectionHandler(channel));
+    private void connect() throws IOException, ExecutionException, InterruptedException {
+        socketService.connect(channel);
     }
 
     private void signupResponse(ServerResponse response) {
-        System.out.println(response.getSuccess()+"<<<");
-        if (response.getSuccess()) {
+        System.out.println(response.getStatus()+"<<<");
+        if (response.getStatus()) {
             Platform.runLater(() -> {
                 SignUpController.singUpStage.close();
             });
@@ -91,41 +97,12 @@ public class SocketController {
         }
     }
 
-    private void loginResponse(ServerResponse response) {
-        System.out.println(response.getLoginResponse().getMsg());
-        if(response.getSuccess()){
-            //메인 화면 보여주기
-            Set<Friend> freindList =response.getLoginResponse().getMember().getFriends();
-            for (Friend friend : freindList) {
-                System.out.println(friend.getFriend().getUsername());
-            }
-            Platform.runLater(() ->{
-                LTalkController.getPrimaryStage().close();
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/main-view.fxml"));
-                Scene scene = null;
-                MainController.setMember(response.getLoginResponse().getMember());
-                MainController.setFriendList(response.getLoginResponse().getMember().getFriends());
-                Stage stage = new Stage();
-                MainController.setStage(stage);
-                try {
-                    scene = new Scene(fxmlLoader.load(), 360, 590);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                stage.setTitle("L-Talk");
-                stage.setScene(scene);
-                StageUtil.setStageUtil(stage);
-                stage.show();
-            });
-            System.out.println("로그인 성공");
-        }else{
-            //실패 사유 보여주기
-            System.out.println("로그인 실패");
-        }
+    public void interpret(ServerResponse response) throws NoSuchAlgorithmException, IOException {
+        dataService.interpret(response);
     }
 
     private void chatResponse(ServerResponse response) {
-        if(response.getSuccess()){
+        if(response.getStatus()){
             //받아온 채팅 추가하는 로직 불러오기
             System.out.println("수신성공");
             System.out.println(response.toString());
@@ -161,9 +138,16 @@ public class SocketController {
     public static void disconnect() {
         if (isConnected) {
             try {
-                group.shutdownNow();
+                isConnected = false;
+                if(MainController.member==null){
+                    sendData(new Data(ProtocolType.DISCONNECT, new DisconnectRequest()));
+                }else{
+                    sendData(new Data(ProtocolType.DISCONNECT, new DisconnectRequest(MainController.getMember().getUsername())));
+                }
                 channel.close();
+                group.shutdownNow();
                 System.out.println("서버와 연결이 종료되었습니다.");
+
             } catch (IOException e) {
                 System.err.println("연결 종료 중 오류 발생: " + e.getMessage());
             }

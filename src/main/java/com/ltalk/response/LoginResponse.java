@@ -10,6 +10,7 @@ import java.util.List;
 public class LoginResponse {
     private String msg;
     private Member member;
+    private List<String> friends;
 
     public LoginResponse(String msg){
         this.msg = msg;

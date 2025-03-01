@@ -46,6 +46,7 @@ public class LTalkController  implements Initializable {
 
     private double x = 0;
     private double y = 0;
+    @Setter
     private Stage stage;
     private StageUtil stageUtil = new StageUtil();
 
@@ -55,7 +56,7 @@ public class LTalkController  implements Initializable {
         enterEvent();
         loginButtonEvent();
         singUpEvent(primaryStage);
-        stageUtil.importBasicsEvent(acp, stage, closeButton,true);
+        stageUtil.importBasicsEvent(acp, primaryStage, closeButton,true);
         stageUtil.hideButton(hideButton, acp);
     }
 

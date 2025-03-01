@@ -1,9 +1,7 @@
 package com.ltalk.entity;
 
 import com.ltalk.enums.ProtocolType;
-import com.ltalk.request.ChatRequest;
-import com.ltalk.request.LoginRequest;
-import com.ltalk.request.SignupRequest;
+import com.ltalk.request.*;
 import lombok.Getter;
 
 @Getter
@@ -12,6 +10,8 @@ public class Data {
     ChatRequest chatRequest;
     LoginRequest loginRequest;
     SignupRequest signupRequest;
+    DisconnectRequest disconnectRequest;
+    FriendRequest friendRequest;
     String username;
 
     public Data(ProtocolType protocolType, ChatRequest chatRequest) {
@@ -32,5 +32,15 @@ public class Data {
     public Data(ProtocolType protocolType, String username){
         this.protocolType = protocolType;
         this.username = username;
+    }
+
+    public Data(ProtocolType protocolType, DisconnectRequest disconnectRequest) {
+        this.protocolType = protocolType;
+        this.disconnectRequest = disconnectRequest;
+    }
+
+    public Data(ProtocolType protocolType, FriendRequest friendRequest) {
+        this.protocolType = protocolType;
+        this.friendRequest = friendRequest;
     }
 }

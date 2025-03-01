@@ -3,9 +3,11 @@ package com.ltalk.handler;
 import com.ltalk.controller.SocketController;
 import com.ltalk.entity.ServerResponse;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.security.NoSuchAlgorithmException;
 
 public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
 
@@ -33,6 +35,13 @@ public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
         System.out.println("서버 응답 JSON: " + responseJson);
         ServerResponse responseData = SocketController.gson.fromJson(responseJson, ServerResponse.class);
         System.out.println("서버 응답 객체: " + responseData);
+        try {
+            SocketController.getInstance().interpret(responseData);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
 
         receiveResponse();
     }

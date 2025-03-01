@@ -3,6 +3,7 @@ package com.ltalk.controller;
 import com.ltalk.entity.Friend;
 import com.ltalk.entity.Member;
 import com.ltalk.enums.ViewBoxEnum;
+import com.ltalk.service.FriendService;
 import com.ltalk.util.StageUtil;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -46,7 +47,7 @@ public class MainController implements Initializable {
     public static Member member;
     @Getter
     @Setter
-    private static Set<Friend> friendList;
+    private static List<String> friendList;
     private ViewBoxEnum viewBoxEnum;
 
 
@@ -66,6 +67,8 @@ public class MainController implements Initializable {
     private ScrollPane scrollPane;
     @FXML
     private VBox viewVBox;
+    @FXML
+    private Button addFriendButton;
 
     private VBox friendBox = new VBox();
     private VBox chatBox = new VBox();
@@ -75,8 +78,8 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println(member.getUsername());
-        for(Friend friend : friendList) {
-            System.out.println(friend.getMember().getUsername());
+        for(String friend : friendList) {
+            System.out.println(friend);
         }
         StageUtil stageUtil = new StageUtil();
         stageUtil.importBasicsEvent(acp,stage,closeButton,true);
@@ -85,11 +88,13 @@ public class MainController implements Initializable {
         chatButtonEvent();
         friendButtonEvent();
         initVBox();
+        addFriendButtonEvent();
         setBox(friendBox);
         viewBoxEnum = ViewBoxEnum.FRIEND;
     }
 
     private void friendButtonEvent(){
+        System.out.println("friendButton click");
         friendButton.setCursor(Cursor.HAND);
         friendButton.setOnMouseClicked(event -> {
             System.out.println("friend button clicked");
@@ -97,6 +102,14 @@ public class MainController implements Initializable {
                 viewVBox = friendBox;
                 viewBoxEnum = ViewBoxEnum.FRIEND;
             }
+        });
+    }
+
+    private void addFriendButtonEvent(){
+        addFriendButton.setCursor(Cursor.HAND);
+        addFriendButton.setOnMouseClicked(event -> {
+            FriendService friendService = new FriendService();
+            friendService.addFriend();
         });
     }
 
@@ -127,12 +140,12 @@ public class MainController implements Initializable {
         Text text = new Text("친구");
         text.setFont(new Font(20));
         children.add(text);
-        for (Friend friend : friendList) {
+        for (String friend : friendList) {
             HBox box = new HBox();
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.CENTER_LEFT);
             vBox.setSpacing(5);
-            box.setUserData(friend.getFriend().getUsername());
+            box.setUserData(friend);
             box.setPrefWidth(289);
             box.setAlignment(Pos.CENTER_LEFT);
             box.setSpacing(8);
@@ -141,7 +154,7 @@ public class MainController implements Initializable {
             rec.setArcWidth(25);
             Image im = new Image("file:src/main/resources/images/talk.png");
             rec.setFill(new ImagePattern(im));
-            Label label = new Label(friend.getFriend().getUsername());
+            Label label = new Label(friend);
             label.setStyle("-fx-background-color: transparent; -fx-font-family: 'Malgun Gothic Bold'; -fx-text-fill: #000000;");
             rec.setCursor(Cursor.HAND);
             rec.setOnMouseClicked(event -> {
@@ -168,7 +181,7 @@ public class MainController implements Initializable {
                         chatController.init(popup);
                         chatController.setReceiver(friend);
                         System.out.println(friend==null);
-                        System.out.println(friend.getFriend().getUsername());
+                        System.out.println(friend);
                         System.out.println("setReceiver ");
                     } catch (IOException e) {
                         throw new RuntimeException(e);

@@ -19,13 +19,17 @@ import static com.ltalk.util.StageUtil.setStageUtil;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+        LTalkController.setPrimaryStage(stage);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 360, 590);
         stage.setTitle("L-Talk");
         stage.setScene(scene);
         setStageUtil(stage);
+
+        // LTalkController에 stage 설정
+        LTalkController lTalkController = fxmlLoader.getController();
+        lTalkController.setStage(stage);
         stage.show();
-        LTalkController.setPrimaryStage(stage);
         SocketController.getInstance();
     }
 }

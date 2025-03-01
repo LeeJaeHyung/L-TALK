@@ -32,6 +32,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <Button fx:id="addFriendButton" mnemonicParsing="false" text="친구추가" />
                </children>
                <HBox.margin>
                   <Insets />
@@ -53,7 +54,8 @@
                            </padding>
                            <opaqueInsets>
                               <Insets />
-                           </opaqueInsets></VBox>
+                           </opaqueInsets>
+                        </VBox>
                      </children>
                      <padding>
                         <Insets top="10.0" />

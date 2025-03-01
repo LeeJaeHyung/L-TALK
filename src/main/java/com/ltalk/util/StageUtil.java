@@ -1,5 +1,6 @@
 package com.ltalk.util;
 
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -28,6 +29,7 @@ public class StageUtil {
             closeButton.setOnAction(event -> {
                 try {
                     disconnect();
+                    stage.close();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
