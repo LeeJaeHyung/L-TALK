@@ -3,6 +3,7 @@ package com.ltalk.controller;
 import com.ltalk.entity.Friend;
 import com.ltalk.entity.Member;
 import com.ltalk.enums.ViewBoxEnum;
+import com.ltalk.service.ChatService;
 import com.ltalk.service.FriendService;
 import com.ltalk.util.StageUtil;
 import javafx.collections.ObservableList;
@@ -69,6 +70,8 @@ public class MainController implements Initializable {
     private VBox viewVBox;
     @FXML
     private Button addFriendButton;
+    @FXML
+    private Button addChatRoomButton;
 
     private VBox friendBox = new VBox();
     private VBox chatBox = new VBox();
@@ -87,6 +90,7 @@ public class MainController implements Initializable {
         stageUtil.hideButton(hideButton,acp);
         chatButtonEvent();
         friendButtonEvent();
+        addChatRoomEvent();
         initVBox();
         addFriendButtonEvent();
         setBox(friendBox);
@@ -110,6 +114,18 @@ public class MainController implements Initializable {
         addFriendButton.setOnMouseClicked(event -> {
             FriendService friendService = new FriendService();
             friendService.addFriend();
+        });
+    }
+
+    private void addChatRoomEvent(){
+        addChatRoomButton.setCursor(Cursor.HAND);
+        addChatRoomButton.setOnMouseClicked(event -> {
+            try {
+                ChatService chatService = new ChatService();
+                chatService.creatRoom();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

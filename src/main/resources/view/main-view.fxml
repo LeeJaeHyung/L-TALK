@@ -33,6 +33,7 @@
                      </graphic>
                   </Button>
                   <Button fx:id="addFriendButton" mnemonicParsing="false" text="친구추가" />
+                   <Button fx:id="addChatRoomButton" mnemonicParsing="false" text="채팅방 생성"/>
                </children>
                <HBox.margin>
                   <Insets />

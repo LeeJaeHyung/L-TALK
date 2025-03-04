@@ -7,11 +7,13 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +40,8 @@ public class ChatController implements Initializable {
     Button closeButton;
     @FXML
     Button hideButton;
+    @FXML
+    VBox chatBox;
 
     @Getter
     @Setter
@@ -84,9 +88,15 @@ public class ChatController implements Initializable {
     }
 
     private void send() throws IOException {
-        System.out.println(textArea.getText());
-        SocketController.getInstance().chat(receiver, MainController.getMember().getUsername(), textArea.getText());
-        Platform.runLater(() -> textArea.clear());
+        String message = textArea.getText();
+        SocketController.getInstance().chat(receiver, MainController.getMember().getUsername(),message);
+        Platform.runLater(() -> {
+            textArea.clear();
+            Label label = new Label(message);
+            chatBox.getChildren().add(label);
+        });
     }
+
+
 
 }

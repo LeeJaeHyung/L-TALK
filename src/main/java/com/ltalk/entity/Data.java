@@ -12,6 +12,7 @@ public class Data {
     SignupRequest signupRequest;
     DisconnectRequest disconnectRequest;
     FriendRequest friendRequest;
+    ChatRoomCreatRequest chatRoomCreatRequest;
     String username;
 
     public Data(ProtocolType protocolType, ChatRequest chatRequest) {
@@ -42,5 +43,10 @@ public class Data {
     public Data(ProtocolType protocolType, FriendRequest friendRequest) {
         this.protocolType = protocolType;
         this.friendRequest = friendRequest;
+    }
+
+    public Data(ProtocolType protocolType, ChatRoomCreatRequest chatRoomCreatRequest) {
+        this.protocolType = protocolType;
+        this.chatRoomCreatRequest = chatRoomCreatRequest;
     }
 }
