@@ -1,6 +1,7 @@
 package com.ltalk.response;
 
-import com.ltalk.entity.Friend;
+import com.ltalk.dto.ChatRoomDTO;
+import com.ltalk.dto.FriendDTO;
 import com.ltalk.entity.Member;
 import lombok.Getter;
 
@@ -10,13 +11,7 @@ import java.util.List;
 public class LoginResponse {
     private String msg;
     private Member member;
-    private List<String> friends;
+    private List<FriendDTO> friends;
+    private List<ChatRoomDTO> chatRoom;
 
-    public LoginResponse(String msg){
-        this.msg = msg;
-    }
-    public LoginResponse(Member member, String msg) {
-        this.msg = msg;
-        this.member = member;
-    }
 }

@@ -4,6 +4,7 @@ import com.ltalk.controller.LTalkController;
 import com.ltalk.controller.MainController;
 import com.ltalk.controller.SignUpController;
 import com.ltalk.controller.SocketController;
+import com.ltalk.dto.FriendDTO;
 import com.ltalk.entity.Data;
 import com.ltalk.entity.Friend;
 import com.ltalk.entity.Member;
@@ -51,8 +52,8 @@ public class DataService {
             //메인 화면 보여주기
             Member member = serverResponse.getLoginResponse().getMember();
             MainController.setMember(member);
-            List<String> freindList = serverResponse.getLoginResponse().getFriends();
-            for (String friend : freindList) {
+            List<FriendDTO> freindList = serverResponse.getLoginResponse().getFriends();
+            for (FriendDTO friend : freindList) {
                 System.out.println(friend);
             }
             Platform.runLater(() ->{

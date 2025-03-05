@@ -1,5 +1,6 @@
 package com.ltalk.controller;
 
+import com.ltalk.dto.FriendDTO;
 import com.ltalk.entity.Friend;
 import com.ltalk.entity.Member;
 import com.ltalk.enums.ViewBoxEnum;
@@ -48,7 +49,7 @@ public class MainController implements Initializable {
     public static Member member;
     @Getter
     @Setter
-    private static List<String> friendList;
+    private static List<FriendDTO> friendList;
     private ViewBoxEnum viewBoxEnum;
 
 
@@ -81,7 +82,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println(member.getUsername());
-        for(String friend : friendList) {
+        for(FriendDTO friend : friendList) {
             System.out.println(friend);
         }
         StageUtil stageUtil = new StageUtil();
@@ -156,7 +157,7 @@ public class MainController implements Initializable {
         Text text = new Text("친구");
         text.setFont(new Font(20));
         children.add(text);
-        for (String friend : friendList) {
+        for (FriendDTO friend : friendList) {
             HBox box = new HBox();
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.CENTER_LEFT);
@@ -170,7 +171,7 @@ public class MainController implements Initializable {
             rec.setArcWidth(25);
             Image im = new Image("file:src/main/resources/images/talk.png");
             rec.setFill(new ImagePattern(im));
-            Label label = new Label(friend);
+            Label label = new Label(friend.getFriendName());
             label.setStyle("-fx-background-color: transparent; -fx-font-family: 'Malgun Gothic Bold'; -fx-text-fill: #000000;");
             rec.setCursor(Cursor.HAND);
             rec.setOnMouseClicked(event -> {
@@ -195,7 +196,7 @@ public class MainController implements Initializable {
                         popupScene = new Scene(fxmlLoader.load(), 400, 600);
                         ChatController chatController = fxmlLoader.getController();
                         chatController.init(popup);
-                        chatController.setReceiver(friend);
+                        chatController.setReceiver(friend.getFriendName());
                         System.out.println(friend==null);
                         System.out.println(friend);
                         System.out.println("setReceiver ");
