@@ -19,8 +19,9 @@
 1. **채팅** - [TCP/IP 통신]   AsynchronousChannelGroup 비동기 I/O (NIO.2)을 활용한 TCP/IP 통신
 2. **음성 채팅** - [UDP 통신] → [Multicast 통신]  
    - 초기에는 UDP 통신을 고려했으나, **최대 5명이 동시에 대화하는 환경**을 고려하여 Multicast 방식을 채택  
-3. **로그인** - [MySQL 이용]  
-4. **친구 등록** - [MySQL 이용]  
+3. **회원가입**
+4. **로그인** - [MySQL 이용]  
+5. **친구 등록** - [MySQL 이용]  
 
 ## **2. 이용 시스템**  
 
