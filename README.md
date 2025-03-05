@@ -12,24 +12,26 @@
     3. 프로젝트의 디자인 모티브는 카카오톡을 모티브로 삼아보자!
 
 
+# **LTALK 시스템 개요**  
 
+## **1. 구현 기능 목록과 우선순위 (내림차순)**  
 
+1. **채팅** - [TCP/IP 통신]   AsynchronousChannelGroup 비동기 I/O (NIO.2)을 활용한 TCP/IP 통신
+2. **음성 채팅** - [UDP 통신] → [Multicast 통신]  
+   - 초기에는 UDP 통신을 고려했으나, **최대 5명이 동시에 대화하는 환경**을 고려하여 Multicast 방식을 채택  
+3. **로그인** - [MySQL 이용]  
+4. **친구 등록** - [MySQL 이용]  
 
-              <구현 기능의 목록과 우선순위 [내림 차순]>
-    
-    1. 채팅       - [TCP-IP 통신]
-    2. 음성채팅   - [UDP 통신] -> [Multicast 통신] // 처음에는 UDP통신으로 생각하였지만 5명이서 게임을 하는 상황까지 고려하여 Multicast통신을 이용하기로 하였습니다.
-    3. 로그인     - [OracleDB 이용]
-    4. 친구등록   - [OracleDB 이용]
-    
-    
-                    <이용 시스템>
-           Language          Java 11.0.2
-           GUI               JavaFX 18.0.2
-           GUI Tool          SceneBuilder 2.0
-           IDE               Eclipse 20210924-0641
-           DataBase          OracleDB 21c 
-           DataBase Tool     SQLDeveloper 22.2.0.173.2018
+## **2. 이용 시스템**  
+
+| 항목            | 내용         |
+|---------------|-------------|
+| **Language**  | Java 17 |
+| **GUI**       | JavaFX 18.0.2 |
+| **GUI Tool**  | SceneBuilder 2.0 |
+| **IDE**       | IntelliJ |
+| **Database**  | MySQL |
+
            
 
 
