@@ -121,8 +121,8 @@ public class SocketController {
         sendData(data);
     }
 
-    public void chat(String receiver, String sender, String message) throws IOException {
-        Data data = new Data(ProtocolType.CHAT, new ChatRequest(receiver, sender, message));
+    public void chat(Long chatRoomId, Long senderId, String message) throws IOException {
+        Data data = new Data(ProtocolType.CHAT, new ChatRequest(chatRoomId, senderId, message));
         sendData(data);
     }
 

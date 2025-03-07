@@ -1,5 +1,8 @@
 package com.ltalk.controller;
 
+import com.ltalk.dto.ChatDTO;
+import com.ltalk.dto.ChatRoomDTO;
+import com.ltalk.entity.ChatRoom;
 import com.ltalk.entity.Friend;
 import com.ltalk.entity.Member;
 import com.ltalk.util.StageUtil;
@@ -14,12 +17,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ChatController implements Initializable {
@@ -45,10 +50,11 @@ public class ChatController implements Initializable {
 
     @Getter
     @Setter
-    private String receiver;
+    private ChatRoomDTO chatRoomdto;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
     }
 
     public void init(Stage stage){
@@ -57,6 +63,7 @@ public class ChatController implements Initializable {
         StageUtil stageUtil = new StageUtil();
         stageUtil.importBasicsEvent(acp, stage, closeButton, false);
         stageUtil.hideButton(hideButton, acp);
+        initChatBox();
         System.out.println("초기화 완료 ");
         System.out.println("isNull"+(acp == null));
         sendButton.setOnMouseClicked(event -> {
@@ -87,9 +94,19 @@ public class ChatController implements Initializable {
         return stage;
     }
 
+    private void initChatBox(){
+        List<ChatDTO> chatDTOs = chatRoomdto.getChats();
+
+        for(ChatDTO chatDTO : chatDTOs){
+            Text text = new Text(""+chatDTO.getChatId()+chatDTO.getSender()+chatDTO.getMessage()+chatDTO.getCreatedAt());
+            chatBox.getChildren().add(text);
+        }
+
+    }
+
     private void send() throws IOException {
         String message = textArea.getText();
-        SocketController.getInstance().chat(receiver, MainController.getMember().getUsername(),message);
+        SocketController.getInstance().chat(chatRoomdto.getId(), MainController.getMember().getId(),message);
         Platform.runLater(() -> {
             textArea.clear();
             Label label = new Label(message);

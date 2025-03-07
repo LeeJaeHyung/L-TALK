@@ -3,11 +3,9 @@ package com.ltalk.service;
 import com.ltalk.controller.LTalkController;
 import com.ltalk.controller.MainController;
 import com.ltalk.controller.SignUpController;
-import com.ltalk.controller.SocketController;
 import com.ltalk.dto.FriendDTO;
+import com.ltalk.dto.MemberDTO;
 import com.ltalk.entity.Data;
-import com.ltalk.entity.Friend;
-import com.ltalk.entity.Member;
 import com.ltalk.entity.ServerResponse;
 import com.ltalk.enums.ProtocolType;
 import com.ltalk.request.FriendRequest;
@@ -20,7 +18,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Set;
 
 import static com.ltalk.controller.SocketController.sendData;
 
@@ -50,9 +47,9 @@ public class DataService {
         System.out.println(serverResponse.getLoginResponse().getMsg());
         if(serverResponse.getStatus()){
             //메인 화면 보여주기
-            Member member = serverResponse.getLoginResponse().getMember();
+            MemberDTO member = serverResponse.getLoginResponse().getMember();
             MainController.setMember(member);
-            List<FriendDTO> freindList = serverResponse.getLoginResponse().getFriends();
+            List<FriendDTO> freindList = member.getFriends();
             for (FriendDTO friend : freindList) {
                 System.out.println(friend);
             }
@@ -61,7 +58,8 @@ public class DataService {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/main-view.fxml"));
                 Scene scene = null;
                 MainController.setMember(serverResponse.getLoginResponse().getMember());
-                MainController.setFriendList(serverResponse.getLoginResponse().getFriends());
+                MainController.setFriendList(member.getFriends());
+                MainController.setChatRoomList(member.getChatRoom());
                 Stage stage = new Stage();
                 MainController.setStage(stage);
                 try {

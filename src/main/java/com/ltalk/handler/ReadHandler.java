@@ -19,7 +19,7 @@ public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
     }
 
     private void receiveResponse() {
-        ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+        ByteBuffer readBuffer = ByteBuffer.allocate(2048);
         channel.read(readBuffer, readBuffer, this);
     }
 

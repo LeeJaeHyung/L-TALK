@@ -1,6 +1,9 @@
 package com.ltalk.controller;
 
+import com.ltalk.dto.ChatRoomDTO;
 import com.ltalk.dto.FriendDTO;
+import com.ltalk.dto.MemberDTO;
+import com.ltalk.entity.ChatRoom;
 import com.ltalk.entity.Friend;
 import com.ltalk.entity.Member;
 import com.ltalk.enums.ViewBoxEnum;
@@ -46,10 +49,13 @@ public class MainController implements Initializable {
     private static Stage stage;
     @Getter
     @Setter
-    public static Member member;
+    public static MemberDTO member;
     @Getter
     @Setter
     private static List<FriendDTO> friendList;
+    @Getter
+    @Setter
+    private static List<ChatRoomDTO> chatRoomList;
     private ViewBoxEnum viewBoxEnum;
 
 
@@ -154,15 +160,15 @@ public class MainController implements Initializable {
     private void initFriendBox() {
         friendBox.setStyle("-fx-background-color: #ffffff");
         ObservableList children = friendBox.getChildren();
-        Text text = new Text("친구");
+        Text text = new Text("채팅방");
         text.setFont(new Font(20));
         children.add(text);
-        for (FriendDTO friend : friendList) {
+        for (ChatRoomDTO chatRoom : chatRoomList) {
             HBox box = new HBox();
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.CENTER_LEFT);
             vBox.setSpacing(5);
-            box.setUserData(friend);
+            box.setUserData(chatRoom);
             box.setPrefWidth(289);
             box.setAlignment(Pos.CENTER_LEFT);
             box.setSpacing(8);
@@ -171,13 +177,14 @@ public class MainController implements Initializable {
             rec.setArcWidth(25);
             Image im = new Image("file:src/main/resources/images/talk.png");
             rec.setFill(new ImagePattern(im));
-            Label label = new Label(friend.getFriendName());
+            Label label = new Label(chatRoom.getName());
             label.setStyle("-fx-background-color: transparent; -fx-font-family: 'Malgun Gothic Bold'; -fx-text-fill: #000000;");
             rec.setCursor(Cursor.HAND);
             rec.setOnMouseClicked(event -> {
                 System.out.println("프로필 클릭 데스요~");
             });
             vBox.getChildren().add(label);
+            box.setUserData(chatRoom);
             box.getChildren().addAll(rec,vBox);
             box.setMargin(rec, new Insets(15,0,10,10));
             children.add(box);
@@ -195,11 +202,11 @@ public class MainController implements Initializable {
                     try {
                         popupScene = new Scene(fxmlLoader.load(), 400, 600);
                         ChatController chatController = fxmlLoader.getController();
+                        chatController.setChatRoomdto(chatRoom);
                         chatController.init(popup);
-                        chatController.setReceiver(friend.getFriendName());
-                        System.out.println(friend==null);
-                        System.out.println(friend);
-                        System.out.println("setReceiver ");
+                        System.out.println(chatRoom==null);
+                        System.out.println(chatRoom);
+                        System.out.println("setChatroom ");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
