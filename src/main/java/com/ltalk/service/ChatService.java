@@ -2,6 +2,8 @@ package com.ltalk.service;
 
 import com.ltalk.controller.MainController;
 import com.ltalk.controller.SocketController;
+import com.ltalk.dto.ChatDTO;
+import com.ltalk.dto.ChatRoomDTO;
 import com.ltalk.entity.Data;
 import com.ltalk.enums.ChatRoomType;
 import com.ltalk.enums.ProtocolType;
@@ -32,5 +34,10 @@ public class ChatService {
         chatRoomMembers.add(MainController.getMember().getUsername());
         ChatRoomCreatRequest chatRoomCreatRequest = new ChatRoomCreatRequest(chatName, roomType ,chatRoomMembers);
         sendData(new Data(ProtocolType.CREATE_CHATROOM, chatRoomCreatRequest));
+    }
+
+    public void addChat(ChatRoomDTO chatRoomdto, String message) {
+        ChatDTO chatDTO = new ChatDTO(message);
+        chatRoomdto.getChats().add(chatDTO);
     }
 }

@@ -5,6 +5,7 @@ import com.ltalk.dto.ChatRoomDTO;
 import com.ltalk.entity.ChatRoom;
 import com.ltalk.entity.Friend;
 import com.ltalk.entity.Member;
+import com.ltalk.service.ChatService;
 import com.ltalk.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -107,11 +108,18 @@ public class ChatController implements Initializable {
     private void send() throws IOException {
         String message = textArea.getText();
         SocketController.getInstance().chat(chatRoomdto.getId(), MainController.getMember().getId(),message);
+        addChat(message);
+    }
+
+    private void addChat(String message) throws IOException {
         Platform.runLater(() -> {
             textArea.clear();
             Label label = new Label(message);
             chatBox.getChildren().add(label);
         });
+
+        ChatService chatService = new ChatService();
+        chatService.addChat(chatRoomdto, message);
     }
 
 
