@@ -3,9 +3,6 @@ package com.ltalk.controller;
 import com.ltalk.dto.ChatRoomDTO;
 import com.ltalk.dto.FriendDTO;
 import com.ltalk.dto.MemberDTO;
-import com.ltalk.entity.ChatRoom;
-import com.ltalk.entity.Friend;
-import com.ltalk.entity.Member;
 import com.ltalk.enums.ViewBoxEnum;
 import com.ltalk.service.ChatService;
 import com.ltalk.service.FriendService;
@@ -36,8 +33,9 @@ import lombok.Setter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.ltalk.util.StageUtil.setStageUtil;
 
@@ -55,7 +53,8 @@ public class MainController implements Initializable {
     private static List<FriendDTO> friendList;
     @Getter
     @Setter
-    private static List<ChatRoomDTO> chatRoomList;
+    public static List<ChatRoomDTO> chatRoomList;
+    public static Map<Long, ChatController> chatControllerMap = new ConcurrentHashMap<>();
     private ViewBoxEnum viewBoxEnum;
 
 
@@ -164,6 +163,8 @@ public class MainController implements Initializable {
         text.setFont(new Font(20));
         children.add(text);
         for (ChatRoomDTO chatRoom : chatRoomList) {
+            ChatController controller = new ChatController(chatRoom);
+            chatControllerMap.put(chatRoom.getId(), controller);
             HBox box = new HBox();
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.CENTER_LEFT);
@@ -184,7 +185,6 @@ public class MainController implements Initializable {
                 System.out.println("프로필 클릭 데스요~");
             });
             vBox.getChildren().add(label);
-            box.setUserData(chatRoom);
             box.getChildren().addAll(rec,vBox);
             box.setMargin(rec, new Insets(15,0,10,10));
             children.add(box);
@@ -197,13 +197,12 @@ public class MainController implements Initializable {
             box.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/chat-view.fxml"));
+                    fxmlLoader.setController(controller);
                     Scene popupScene;
                     Stage popup = new Stage();
                     try {
                         popupScene = new Scene(fxmlLoader.load(), 400, 600);
-                        ChatController chatController = fxmlLoader.getController();
-                        chatController.setChatRoomdto(chatRoom);
-                        chatController.init(popup);
+                        controller.init(popup);
                         System.out.println(chatRoom==null);
                         System.out.println(chatRoom);
                         System.out.println("setChatroom ");

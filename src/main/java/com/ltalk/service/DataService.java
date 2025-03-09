@@ -3,6 +3,7 @@ package com.ltalk.service;
 import com.ltalk.controller.LTalkController;
 import com.ltalk.controller.MainController;
 import com.ltalk.controller.SignUpController;
+import com.ltalk.dto.ChatDTO;
 import com.ltalk.dto.FriendDTO;
 import com.ltalk.dto.MemberDTO;
 import com.ltalk.entity.Data;
@@ -26,9 +27,16 @@ public class DataService {
     public void interpret(ServerResponse serverResponse) throws NoSuchAlgorithmException, IOException {
         switch(serverResponse.getProtocolType()){
             case LOGIN -> login(serverResponse);
-//            case CHAT -> chat();
+            case NEW_CHAT -> newChat(serverResponse);
             case SIGNUP -> signup(serverResponse);
         }
+    }
+
+    private void newChat(ServerResponse serverResponse) throws IOException {
+        ChatService chatService = new ChatService();
+        ChatDTO chatDTO = serverResponse.getNewChatResponse().getDto();
+        chatService.newChat(chatDTO);
+        System.out.println("newChat 서버로 부터 전송받음");
     }
 
     private void signup(ServerResponse serverResponse) {

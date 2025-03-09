@@ -1,5 +1,6 @@
 package com.ltalk.service;
 
+import com.ltalk.controller.ChatController;
 import com.ltalk.controller.MainController;
 import com.ltalk.controller.SocketController;
 import com.ltalk.dto.ChatDTO;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ltalk.controller.MainController.chatControllerMap;
 import static com.ltalk.controller.SocketController.getInstance;
 import static com.ltalk.controller.SocketController.sendData;
 
@@ -39,5 +41,10 @@ public class ChatService {
     public void addChat(ChatRoomDTO chatRoomdto, String message) {
         ChatDTO chatDTO = new ChatDTO(message);
         chatRoomdto.getChats().add(chatDTO);
+    }
+
+    public void newChat(ChatDTO chatDTO) {
+        ChatController chatController = chatControllerMap.get(chatDTO.getChatRoomId());
+        chatController.newChat(chatDTO);
     }
 }

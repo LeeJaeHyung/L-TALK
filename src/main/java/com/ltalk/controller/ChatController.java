@@ -2,9 +2,6 @@ package com.ltalk.controller;
 
 import com.ltalk.dto.ChatDTO;
 import com.ltalk.dto.ChatRoomDTO;
-import com.ltalk.entity.ChatRoom;
-import com.ltalk.entity.Friend;
-import com.ltalk.entity.Member;
 import com.ltalk.service.ChatService;
 import com.ltalk.util.StageUtil;
 import javafx.application.Platform;
@@ -56,6 +53,10 @@ public class ChatController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+    }
+
+    public ChatController (ChatRoomDTO chatRoomdto) {
+        this.chatRoomdto = chatRoomdto;
     }
 
     public void init(Stage stage){
@@ -123,5 +124,16 @@ public class ChatController implements Initializable {
     }
 
 
+    public void newChat(ChatDTO chatDTO) {
+        chatRoomdto.getChats().add(chatDTO); // 새로운 채팅 데이터 추가
+
+        Platform.runLater(() -> { // UI 변경을 JavaFX UI 쓰레드에서 실행
+            Label messageLabel = new Label(chatDTO.getSender() + ": " + chatDTO.getMessage());
+            chatBox.getChildren().add(messageLabel);
+
+            // 새로운 메시지가 추가될 때 자동으로 스크롤을 최하단으로 이동
+            scrollPane.setVvalue(1.0);
+        });
+    }
 
 }
