@@ -25,6 +25,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static com.ltalk.controller.MainController.chatControllerMap;
+
 public class ChatController implements Initializable {
 
     @FXML
@@ -50,6 +52,11 @@ public class ChatController implements Initializable {
     @Setter
     private ChatRoomDTO chatRoomdto;
 
+    @Getter
+    @Setter
+    private Boolean isOpen = false;
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -63,7 +70,7 @@ public class ChatController implements Initializable {
         setStage(stage);
         System.out.println("ChatController 초기화 진행 ");
         StageUtil stageUtil = new StageUtil();
-        stageUtil.importBasicsEvent(acp, stage, closeButton, false);
+        stageUtil.importChatBasicEvent(acp, stage, closeButton, this);
         stageUtil.hideButton(hideButton, acp);
         initChatBox();
         System.out.println("초기화 완료 ");
@@ -97,13 +104,12 @@ public class ChatController implements Initializable {
     }
 
     private void initChatBox(){
+        chatBox.getChildren().clear();
         List<ChatDTO> chatDTOs = chatRoomdto.getChats();
-
         for(ChatDTO chatDTO : chatDTOs){
-            Text text = new Text(""+chatDTO.getChatId()+chatDTO.getSender()+chatDTO.getMessage()+chatDTO.getCreatedAt());
+            Text text = new Text(""+chatDTO.getChatId()+chatDTO.getSender()+chatDTO.getMessage()+chatDTO.getCreatedAt()+"안읽은 사람수 : "+chatDTO.getUnreadCount());
             chatBox.getChildren().add(text);
         }
-
     }
 
     private void send() throws IOException {
@@ -124,16 +130,23 @@ public class ChatController implements Initializable {
     }
 
 
-    public void newChat(ChatDTO chatDTO) {
-        chatRoomdto.getChats().add(chatDTO); // 새로운 채팅 데이터 추가
+    public void newChat(ChatDTO chatDTO) throws IOException {
+        chatRoomdto.getChats().add(chatDTO);
+        new ChatService().sortChatRoomMember(chatRoomdto);
+        // 새로운 채팅 데이터 추가
+        if(isOpen){
+            Platform.runLater(() -> { // UI 변경을 JavaFX UI 쓰레드에서 실행
+                initChatBox();
+            });
+        }
+    }
 
-        Platform.runLater(() -> { // UI 변경을 JavaFX UI 쓰레드에서 실행
-            Label messageLabel = new Label(chatDTO.getSender() + ": " + chatDTO.getMessage());
-            chatBox.getChildren().add(messageLabel);
-
-            // 새로운 메시지가 추가될 때 자동으로 스크롤을 최하단으로 이동
-            scrollPane.setVvalue(1.0);
-        });
+    public void newChat(){
+        if(isOpen){
+            Platform.runLater(() -> { // UI 변경을 JavaFX UI 쓰레드에서 실행
+                initChatBox();
+            });
+        }
     }
 
 }

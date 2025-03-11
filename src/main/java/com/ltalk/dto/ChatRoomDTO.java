@@ -1,6 +1,7 @@
 package com.ltalk.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class ChatRoomDTO {
     private String name;
     private LocalDateTime lastChattedAt;
     private Integer participantCount = 0;
+    @Setter
     private List<ChatRoomMemberDTO> members = new ArrayList<>();
     private List<ChatDTO> chats = new ArrayList<>();
 

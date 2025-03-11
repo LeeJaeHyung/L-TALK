@@ -1,8 +1,10 @@
 package com.ltalk.controller;
 
+import com.ltalk.dto.ChatDTO;
 import com.ltalk.dto.ChatRoomDTO;
 import com.ltalk.dto.FriendDTO;
 import com.ltalk.dto.MemberDTO;
+import com.ltalk.entity.Chat;
 import com.ltalk.enums.ViewBoxEnum;
 import com.ltalk.service.ChatService;
 import com.ltalk.service.FriendService;
@@ -97,7 +99,11 @@ public class MainController implements Initializable {
         chatButtonEvent();
         friendButtonEvent();
         addChatRoomEvent();
-        initVBox();
+        try {
+            initVBox();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         addFriendButtonEvent();
         setBox(friendBox);
         viewBoxEnum = ViewBoxEnum.FRIEND;
@@ -151,18 +157,20 @@ public class MainController implements Initializable {
         scrollPane.setContent(vBox);
     }
 
-    private void initVBox() {
+    private void initVBox() throws IOException {
        initChatBox();
        initFriendBox();
     }
 
-    private void initFriendBox() {
+    private void initFriendBox() throws IOException {
         friendBox.setStyle("-fx-background-color: #ffffff");
         ObservableList children = friendBox.getChildren();
         Text text = new Text("채팅방");
         text.setFont(new Font(20));
         children.add(text);
         for (ChatRoomDTO chatRoom : chatRoomList) {
+            ChatService chatService = new ChatService();
+            chatService.readCount(chatRoom);
             ChatController controller = new ChatController(chatRoom);
             chatControllerMap.put(chatRoom.getId(), controller);
             HBox box = new HBox();
@@ -196,8 +204,16 @@ public class MainController implements Initializable {
             });
             box.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
+                    try {
+                        ChatService service = new ChatService();
+                        List<ChatDTO> chatDTOList = controller.getChatRoomdto().getChats();
+                        service.readChat(chatRoom.getId(), chatDTOList.get(chatDTOList.size()-1).getChatId());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/chat-view.fxml"));
                     fxmlLoader.setController(controller);
+                    controller.setIsOpen(true);
                     Scene popupScene;
                     Stage popup = new Stage();
                     try {

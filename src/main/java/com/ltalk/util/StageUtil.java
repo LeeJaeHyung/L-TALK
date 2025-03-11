@@ -1,5 +1,6 @@
 package com.ltalk.util;
 
+import com.ltalk.controller.ChatController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Cursor;
@@ -21,6 +22,14 @@ public class StageUtil {
     public static void setStageUtil(Stage stage){
         stage.initStyle(StageStyle.UNDECORATED);
         stage.getIcons().add(new Image("/images/LTalkIcon.png"));
+    }
+
+    public void importChatBasicEvent(AnchorPane acp, Stage stage, Button closeButton, ChatController chatController){
+        stageMove(acp, stage);
+        closeButton.setOnAction(event -> {
+            chatController.setIsOpen(false);
+            stage.close();
+        });
     }
 
     public void importBasicsEvent(AnchorPane acp, Stage stage, Button closeButton, boolean isMain){

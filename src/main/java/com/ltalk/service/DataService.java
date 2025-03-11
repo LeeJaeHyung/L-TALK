@@ -3,9 +3,8 @@ package com.ltalk.service;
 import com.ltalk.controller.LTalkController;
 import com.ltalk.controller.MainController;
 import com.ltalk.controller.SignUpController;
-import com.ltalk.dto.ChatDTO;
-import com.ltalk.dto.FriendDTO;
-import com.ltalk.dto.MemberDTO;
+import com.ltalk.dto.*;
+import com.ltalk.entity.Chat;
 import com.ltalk.entity.Data;
 import com.ltalk.entity.ServerResponse;
 import com.ltalk.enums.ProtocolType;
@@ -20,6 +19,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import static com.ltalk.controller.MainController.chatControllerMap;
 import static com.ltalk.controller.SocketController.sendData;
 
 public class DataService {
@@ -29,7 +29,24 @@ public class DataService {
             case LOGIN -> login(serverResponse);
             case NEW_CHAT -> newChat(serverResponse);
             case SIGNUP -> signup(serverResponse);
+            case READ_CHAT -> readChat(serverResponse);
         }
+    }
+
+    private void readChat(ServerResponse serverResponse) throws IOException {
+        ChatService chatService = new ChatService();
+        ChatRoomMemberDTO chatRoomMemberDTO = serverResponse.getReadChatResponse().getRoomMember();
+        ChatRoomDTO chatRoomDTO = chatControllerMap.get(chatRoomMemberDTO.getChatRoomId()).getChatRoomdto();
+        List<ChatRoomMemberDTO> chatRoomMemberList = chatRoomDTO.getMembers();
+        for(ChatRoomMemberDTO chatRoomMemberDTO2 : chatRoomMemberList){
+            if(chatRoomMemberDTO2.getMemberId().equals(chatRoomMemberDTO.getMemberId())){
+                chatRoomMemberList.remove(chatRoomMemberDTO2);
+                chatRoomMemberList.add(chatRoomMemberDTO);
+                break;
+            }
+        }
+        chatService.sortChatRoomMember(chatRoomDTO);
+        chatService.newChat(chatRoomDTO.getId());
     }
 
     private void newChat(ServerResponse serverResponse) throws IOException {
@@ -37,6 +54,12 @@ public class DataService {
         ChatDTO chatDTO = serverResponse.getNewChatResponse().getDto();
         chatService.newChat(chatDTO);
         System.out.println("newChat 서버로 부터 전송받음");
+        System.out.println("getChatRoomId : "+chatDTO.getChatRoomId());
+
+        if(chatService.checkOpenRoom(chatDTO.getChatRoomId())){
+            chatService.readChat(chatDTO.getChatRoomId(),chatDTO.getChatId());
+        }
+
     }
 
     private void signup(ServerResponse serverResponse) {
