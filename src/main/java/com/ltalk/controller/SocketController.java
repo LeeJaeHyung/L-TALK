@@ -121,6 +121,7 @@ public class SocketController {
 
     public static void sendData(Data data) {
         String jsonData = gson.toJson(data);
+        System.out.println("[서버에게 전송 : "+jsonData+"]");
         ByteBuffer writeBuffer = ByteBuffer.wrap(jsonData.getBytes());
         channel.write(writeBuffer, writeBuffer, new WriteHandler(channel,writeBuffer));
     }

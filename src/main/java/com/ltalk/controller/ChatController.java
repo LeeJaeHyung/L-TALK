@@ -106,39 +106,25 @@ public class ChatController implements Initializable {
     private void initChatBox(){
         chatBox.getChildren().clear();
         List<ChatDTO> chatDTOs = chatRoomdto.getChats();
-        for(ChatDTO chatDTO : chatDTOs){
-            Text text = new Text(""+chatDTO.getChatId()+chatDTO.getSender()+chatDTO.getMessage()+chatDTO.getCreatedAt()+"안읽은 사람수 : "+chatDTO.getUnreadCount());
-            chatBox.getChildren().add(text);
+        synchronized (chatDTOs){
+            for(ChatDTO chatDTO : chatDTOs){
+                Text text = new Text(""+chatDTO.getChatId()+chatDTO.getSender()+chatDTO.getMessage()+chatDTO.getCreatedAt()+"안읽은 사람수 : "+chatDTO.getUnreadCount());
+                chatBox.getChildren().add(text);
+            }
         }
     }
 
     private void send() throws IOException {
         String message = textArea.getText();
-        SocketController.getInstance().chat(chatRoomdto.getId(), MainController.getMember().getId(),message);
+        ChatService chatService = new ChatService();
+        chatService.chat(chatRoomdto.getId(), MainController.getMember().getId(),message);
         addChat(message);
     }
 
     private void addChat(String message) throws IOException {
         Platform.runLater(() -> {
             textArea.clear();
-            Label label = new Label(message);
-            chatBox.getChildren().add(label);
         });
-
-        ChatService chatService = new ChatService();
-        chatService.addChat(chatRoomdto, message);
-    }
-
-
-    public void newChat(ChatDTO chatDTO) throws IOException {
-        chatRoomdto.getChats().add(chatDTO);
-        new ChatService().sortChatRoomMember(chatRoomdto);
-        // 새로운 채팅 데이터 추가
-        if(isOpen){
-            Platform.runLater(() -> { // UI 변경을 JavaFX UI 쓰레드에서 실행
-                initChatBox();
-            });
-        }
     }
 
     public void newChat(){

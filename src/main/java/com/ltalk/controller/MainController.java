@@ -207,7 +207,9 @@ public class MainController implements Initializable {
                     try {
                         ChatService service = new ChatService();
                         List<ChatDTO> chatDTOList = controller.getChatRoomdto().getChats();
-                        service.readChat(chatRoom.getId(), chatDTOList.get(chatDTOList.size()-1).getChatId());
+                        synchronized (chatDTOList){
+                            service.readChat(chatRoom.getId(), chatDTOList.get(chatDTOList.size()-1).getChatId(), true);
+                        }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

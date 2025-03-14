@@ -1,6 +1,7 @@
 package com.ltalk.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class ChatRoomMemberDTO {
@@ -8,5 +9,6 @@ public class ChatRoomMemberDTO {
     private Long memberId;
     private Long chatRoomId;
     private String memberName;
+    @Setter
     private Long readChatId;
 }

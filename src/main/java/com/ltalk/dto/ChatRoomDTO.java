@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -14,7 +15,7 @@ public class ChatRoomDTO {
     private LocalDateTime lastChattedAt;
     private Integer participantCount = 0;
     @Setter
-    private List<ChatRoomMemberDTO> members = new ArrayList<>();
-    private List<ChatDTO> chats = new ArrayList<>();
+    private List<ChatRoomMemberDTO> members = Collections.synchronizedList(new ArrayList<>());
+    private List<ChatDTO> chats = Collections.synchronizedList(new ArrayList<>());
 
 }

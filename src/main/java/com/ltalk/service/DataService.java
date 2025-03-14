@@ -35,19 +35,12 @@ public class DataService {
 
     private void readChat(ServerResponse serverResponse) throws IOException {
         ChatService chatService = new ChatService();
+        System.out.println("누군가 채팅 읽음");
         ChatRoomMemberDTO chatRoomMemberDTO = serverResponse.getReadChatResponse().getRoomMember();
-        ChatRoomDTO chatRoomDTO = chatControllerMap.get(chatRoomMemberDTO.getChatRoomId()).getChatRoomdto();
-        List<ChatRoomMemberDTO> chatRoomMemberList = chatRoomDTO.getMembers();
-        for(ChatRoomMemberDTO chatRoomMemberDTO2 : chatRoomMemberList){
-            if(chatRoomMemberDTO2.getMemberId().equals(chatRoomMemberDTO.getMemberId())){
-                chatRoomMemberList.remove(chatRoomMemberDTO2);
-                chatRoomMemberList.add(chatRoomMemberDTO);
-                break;
-            }
-        }
-        chatService.sortChatRoomMember(chatRoomDTO);
-        chatService.newChat(chatRoomDTO.getId());
+        chatService.updateChatRoomMember(chatRoomMemberDTO);
     }
+
+
 
     private void newChat(ServerResponse serverResponse) throws IOException {
         ChatService chatService = new ChatService();
@@ -55,9 +48,10 @@ public class DataService {
         chatService.newChat(chatDTO);
         System.out.println("newChat 서버로 부터 전송받음");
         System.out.println("getChatRoomId : "+chatDTO.getChatRoomId());
-
-        if(chatService.checkOpenRoom(chatDTO.getChatRoomId())){
-            chatService.readChat(chatDTO.getChatRoomId(),chatDTO.getChatId());
+        if(!MainController.getMember().getId().equals(chatDTO.getSenderId())&& chatService.checkOpenRoom(chatDTO.getChatRoomId())){
+            //내가 보낸 채팅이 아니고 채팅방이 열려있는 경우 읽었음을 서버로 전송
+            System.out.println("채팅방 열려있어서 데이터 전송");
+            chatService.readChat(chatDTO.getChatRoomId(),chatDTO.getChatId(), true);
         }
 
     }
