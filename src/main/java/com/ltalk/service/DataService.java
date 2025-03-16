@@ -3,8 +3,10 @@ package com.ltalk.service;
 import com.ltalk.controller.LTalkController;
 import com.ltalk.controller.MainController;
 import com.ltalk.controller.SignUpController;
-import com.ltalk.dto.*;
-import com.ltalk.entity.Chat;
+import com.ltalk.dto.ChatDTO;
+import com.ltalk.dto.ChatRoomMemberDTO;
+import com.ltalk.dto.FriendDTO;
+import com.ltalk.dto.MemberDTO;
 import com.ltalk.entity.Data;
 import com.ltalk.entity.ServerResponse;
 import com.ltalk.enums.ProtocolType;
@@ -19,7 +21,6 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import static com.ltalk.controller.MainController.chatControllerMap;
 import static com.ltalk.controller.SocketController.sendData;
 
 public class DataService {
