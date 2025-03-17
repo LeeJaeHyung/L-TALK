@@ -25,6 +25,7 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +44,10 @@ public class ChatController implements Initializable {
     @FXML
     private Button sendButton;
 
+    @FXML
+    VBox titleBox;
+
+    @FXML
     Stage stage;
     @FXML
     AnchorPane acp;
@@ -63,6 +68,7 @@ public class ChatController implements Initializable {
 
     private final DateTimeFormatter chatFormatter = DateTimeFormatter.ofPattern("a hh:mm", Locale.KOREA);
     private final DateTimeFormatter userDataFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm", Locale.KOREA);
+    private final DateTimeFormatter dateLabelFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일 EEEE", Locale.KOREAN);
 
 
     @Override
@@ -77,6 +83,8 @@ public class ChatController implements Initializable {
     public void init(Stage stage){
         setStage(stage);
         System.out.println("ChatController 초기화 진행 ");
+        titleBox.setAlignment(Pos.TOP_LEFT);
+        titleBox.getChildren().addAll(new Text(chatRoomdto.getName()), new Text(chatRoomdto.getParticipantCount().toString()));
         StageUtil stageUtil = new StageUtil();
         stageUtil.importChatBasicEvent(acp, stage, closeButton, this);
         stageUtil.hideButton(hideButton, acp);
@@ -120,7 +128,10 @@ public class ChatController implements Initializable {
                 HBox positionBox = null;
                 if(beforeChatBox != null){//이전 메세지가 있음
                     ChatDTO beforeChatDTO = (ChatDTO) beforeChatBox.getUserData();
-                    if(beforeChatDTO.getSender().equals(chatDTO.getSender())){//작성자가 같은가?
+                    if(!dateCompare(beforeChatDTO.getCreatedAt(), chatDTO.getCreatedAt())){// 이전 채팅과 날짜가 다른가?
+                        positionBox = makeNewChat(chatDTO.getSender().equals(member.getUsername()), chatDTO);
+                        chatBox.getChildren().add(positionBox);
+                    } else if(beforeChatDTO.getSender().equals(chatDTO.getSender())){//작성자가 같은가?
                         if(beforeChatDTO.getUnreadCount()==chatDTO.getUnreadCount() &&
                                 beforeChatDTO.getCreatedAt().format(userDataFormatter).equals(chatDTO.getCreatedAt().format(userDataFormatter))){//시간이 같음
                             positionBox = editChat(false, beforeChatBox, chatDTO);
@@ -165,6 +176,23 @@ public class ChatController implements Initializable {
         }
     }
 
+    public boolean dateCompare(LocalDateTime beforeDate, LocalDateTime date){
+        boolean equals = beforeDate.toLocalDate().equals(date.toLocalDate());
+        if (!equals){
+            VBox dateBox = makeDateLabel(date);
+            dateBox.setAlignment(Pos.CENTER);
+            chatBox.getChildren().add(dateBox);
+        }
+        return equals;
+    }
+
+    public VBox makeDateLabel(LocalDateTime date){
+        VBox dateBox = new VBox();
+        Label dateLabel = new Label(dateLabelFormatter.format(date));
+        dateBox.getChildren().add(dateLabel);
+        return dateBox;
+    }
+
     public Label makeMessage(ChatDTO chatDTO, boolean isMyChat){
         Label message = new Label(chatDTO.getMessage());
         if(isMyChat){
@@ -185,19 +213,21 @@ public class ChatController implements Initializable {
         VBox timeBox = new VBox();
         Text time = new Text(chatFormatter.format(chatDTO.getCreatedAt()));
         Text unReadCount = new Text(Integer.toString(chatDTO.getUnreadCount()));
-        timeBox.getChildren().addAll(time, unReadCount);
+        timeBox.getChildren().addAll(unReadCount, time);
         messageBox.getChildren().add(message);
         if(isMyChat){
             chatPackage.setAlignment(Pos.TOP_RIGHT);
+            timeBox.setAlignment(Pos.BOTTOM_RIGHT);
+            messageTimeCountBox.getChildren().addAll(timeBox, messageBox);
         }else{
             messagePackage.getChildren().add(new Text(chatDTO.getSender()));
             chatPackage.setAlignment(Pos.TOP_LEFT);
+            timeBox.setAlignment(Pos.BOTTOM_LEFT);
             ImageView imageView = new ImageView("/images/friend.png");
             imageBox.getChildren().add(imageView);
+            messageTimeCountBox.getChildren().addAll(messageBox, timeBox);
         }
-        messageTimeCountBox.getChildren().addAll(messageBox, timeBox);
         messagePackage.getChildren().add(messageTimeCountBox);
-        timeBox.setAlignment(Pos.BOTTOM_RIGHT);
         imageBox.setAlignment(Pos.TOP_CENTER);
         chatPackage.getChildren().addAll(imageBox,messagePackage);
         messagePackage.setStyle("-fx-border-color: red;");
@@ -209,17 +239,29 @@ public class ChatController implements Initializable {
         VBox messagePackage = (VBox) chatPackage.getChildren().get(chatPackage.getChildren().size() - 1);
         Label message = makeMessage(chatDTO, chatDTO.getSender().equals(member.getUsername()));
         HBox beforeMessageTimeCountBox = (HBox) messagePackage.getChildren().get(messagePackage.getChildren().size()-1);
+        boolean isMyChat = chatDTO.getSender().equals(member.getUsername());
         if (setTime){
             VBox messageBox = new VBox();
             VBox timeBox = new VBox();
             messageBox.getChildren().add(message);
-            timeBox.getChildren().addAll(new Text(chatDTO.getCreatedAt().format(chatFormatter)), new Text(Integer.toString(chatDTO.getUnreadCount())));
+            timeBox.getChildren().addAll(new Text(Integer.toString(chatDTO.getUnreadCount())), new Text(chatDTO.getCreatedAt().format(chatFormatter)));
             HBox messageTimeCountBox = new HBox();
-            messageTimeCountBox.getChildren().addAll(messageBox, timeBox);
+            if(isMyChat){
+                messageTimeCountBox.getChildren().addAll(timeBox, messageBox);
+                timeBox.setAlignment(Pos.BOTTOM_RIGHT);
+            }else {
+                messageTimeCountBox.getChildren().addAll(messageBox, timeBox);
+                timeBox.setAlignment(Pos.BOTTOM_LEFT);
+            }
             messagePackage.getChildren().add(messageTimeCountBox);
-            timeBox.setAlignment(Pos.BOTTOM_RIGHT);
         }else{
-            VBox messageBox = (VBox)beforeMessageTimeCountBox.getChildren().get(0);
+            int idx;
+            if (isMyChat){
+                idx = 1;
+            }else{
+                idx = 0;
+            }
+            VBox messageBox = (VBox)beforeMessageTimeCountBox.getChildren().get(idx);
             messageBox.getChildren().add(message);
         }
         return chatPackage;
