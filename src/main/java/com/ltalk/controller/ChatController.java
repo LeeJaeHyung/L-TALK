@@ -177,13 +177,13 @@ public class ChatController implements Initializable {
     }
 
     public boolean dateCompare(LocalDateTime beforeDate, LocalDateTime date){
-        boolean equals = beforeDate.toLocalDate().equals(date.toLocalDate());
-        if (!equals){
+        boolean isEquals = beforeDate.toLocalDate().equals(date.toLocalDate());
+        if (!isEquals){
             VBox dateBox = makeDateLabel(date);
             dateBox.setAlignment(Pos.CENTER);
             chatBox.getChildren().add(dateBox);
         }
-        return equals;
+        return isEquals;
     }
 
     public VBox makeDateLabel(LocalDateTime date){
@@ -218,11 +218,14 @@ public class ChatController implements Initializable {
         if(isMyChat){
             chatPackage.setAlignment(Pos.TOP_RIGHT);
             timeBox.setAlignment(Pos.BOTTOM_RIGHT);
+            messageBox.setAlignment(Pos.CENTER_RIGHT);
             messageTimeCountBox.getChildren().addAll(timeBox, messageBox);
+            messageTimeCountBox.setAlignment(Pos.CENTER_RIGHT);
         }else{
             messagePackage.getChildren().add(new Text(chatDTO.getSender()));
             chatPackage.setAlignment(Pos.TOP_LEFT);
             timeBox.setAlignment(Pos.BOTTOM_LEFT);
+            messageBox.setAlignment(Pos.CENTER_LEFT);
             ImageView imageView = new ImageView("/images/friend.png");
             imageBox.getChildren().add(imageView);
             messageTimeCountBox.getChildren().addAll(messageBox, timeBox);
@@ -240,30 +243,31 @@ public class ChatController implements Initializable {
         Label message = makeMessage(chatDTO, chatDTO.getSender().equals(member.getUsername()));
         HBox beforeMessageTimeCountBox = (HBox) messagePackage.getChildren().get(messagePackage.getChildren().size()-1);
         boolean isMyChat = chatDTO.getSender().equals(member.getUsername());
-        if (setTime){
-            VBox messageBox = new VBox();
-            VBox timeBox = new VBox();
-            messageBox.getChildren().add(message);
-            timeBox.getChildren().addAll(new Text(Integer.toString(chatDTO.getUnreadCount())), new Text(chatDTO.getCreatedAt().format(chatFormatter)));
-            HBox messageTimeCountBox = new HBox();
-            if(isMyChat){
-                messageTimeCountBox.getChildren().addAll(timeBox, messageBox);
-                timeBox.setAlignment(Pos.BOTTOM_RIGHT);
-            }else {
-                messageTimeCountBox.getChildren().addAll(messageBox, timeBox);
-                timeBox.setAlignment(Pos.BOTTOM_LEFT);
-            }
-            messagePackage.getChildren().add(messageTimeCountBox);
-        }else{
-            int idx;
-            if (isMyChat){
-                idx = 1;
-            }else{
-                idx = 0;
-            }
-            VBox messageBox = (VBox)beforeMessageTimeCountBox.getChildren().get(idx);
-            messageBox.getChildren().add(message);
+        VBox messageBox = new VBox();
+        VBox timeBox = new VBox();
+        messageBox.getChildren().add(message);
+        HBox messageTimeCountBox = new HBox();
+        int timeIdx;
+        if(isMyChat){
+            timeIdx = 0;
+            messageTimeCountBox.getChildren().addAll(timeBox, messageBox);
+            timeBox.setAlignment(Pos.BOTTOM_RIGHT);
+            messageBox.setAlignment(Pos.CENTER_RIGHT);
+            messageTimeCountBox.setAlignment(Pos.CENTER_RIGHT);
+        }else {
+            timeIdx = 1;
+            messageTimeCountBox.getChildren().addAll(messageBox, timeBox);
+            timeBox.setAlignment(Pos.BOTTOM_LEFT);
+            messageBox.setAlignment(Pos.CENTER_LEFT);
+            messageTimeCountBox.setAlignment(Pos.CENTER_LEFT);
         }
+        if(!setTime){
+            VBox beforeTimeBox = (VBox)beforeMessageTimeCountBox.getChildren().get(timeIdx);
+            beforeTimeBox.getChildren().clear();
+        }
+        timeBox.getChildren().addAll(new Text(Integer.toString(chatDTO.getUnreadCount())), new Text(chatDTO.getCreatedAt().format(chatFormatter)));
+        messagePackage.getChildren().add(messageTimeCountBox);
+
         return chatPackage;
     }
 
