@@ -13,6 +13,7 @@ public class ServerResponse {
     private SignupResponse signupResponse;
     private NewChatResponse newChatResponse;
     private ReadChatResponse readChatResponse;
+    private VoiceServerIPResponse voiceServerIPResponse;
 
     public ServerResponse(ProtocolType protocolType, boolean status, ChatResponse chatResponse) {
         this.protocolType = protocolType;

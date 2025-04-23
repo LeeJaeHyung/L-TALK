@@ -3,6 +3,7 @@ package com.ltalk.controller;
 import com.ltalk.dto.ChatDTO;
 import com.ltalk.dto.ChatRoomDTO;
 import com.ltalk.service.ChatService;
+import com.ltalk.service.VoiceService;
 import com.ltalk.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -57,6 +58,8 @@ public class ChatController implements Initializable {
     Button hideButton;
     @FXML
     VBox chatBox;
+    @FXML
+    Button joinVoiceChat;
 
     @Getter
     @Setter
@@ -106,6 +109,9 @@ public class ChatController implements Initializable {
                     throw new RuntimeException(e);
                 }
             }
+        });
+        joinVoiceChat.setOnMouseClicked(event -> {
+            joinVoiceChat(chatRoomdto.getId());
         });
     }
 
@@ -269,6 +275,10 @@ public class ChatController implements Initializable {
         messagePackage.getChildren().add(messageTimeCountBox);
 
         return chatPackage;
+    }
+
+    public void joinVoiceChat(Long chatRoomId){
+        new VoiceService().getVoiceServerIP(chatRoomId);
     }
 
 }

@@ -11,7 +11,6 @@ import com.ltalk.enums.ChatRoomType;
 import com.ltalk.enums.ProtocolType;
 import com.ltalk.request.ChatRoomCreatRequest;
 import com.ltalk.request.ReadChatRequest;
-import lombok.Synchronized;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +18,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.ltalk.controller.MainController.*;
+import static com.ltalk.controller.MainController.chatControllerMap;
+import static com.ltalk.controller.MainController.member;
 import static com.ltalk.controller.SocketController.getInstance;
 import static com.ltalk.controller.SocketController.sendData;
 
@@ -152,11 +152,11 @@ public class ChatService {
             while (iterator.hasNext()) {
                 ChatRoomMemberDTO chatRoomMemberDTO2 = iterator.next();
                 if (chatRoomMemberDTO2.getMemberId().equals(chatRoomMemberDTO.getMemberId())) {
-                    iterator.remove(); // ✅ 안전한 삭제
+                    iterator.remove(); // 안전한 삭제
                     break;
                 }
             }
-            chatRoomMemberList.add(chatRoomMemberDTO); // ✅ 새로운 객체 추가
+            chatRoomMemberList.add(chatRoomMemberDTO); // 새로운 객체 추가
         }
 
         sortChatRoomMember(chatRoomDTO);

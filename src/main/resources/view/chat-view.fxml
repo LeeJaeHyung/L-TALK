@@ -38,7 +38,11 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <VBox fx:id="titleBox" prefHeight="200.0" prefWidth="100.0" />
+                   <VBox fx:id="titleBox" prefHeight="200.0" prefWidth="100.0" >
+                       <children>
+                           <Button fx:id="joinVoiceChat" text="음성채팅 참여"/>
+                       </children>
+                   </VBox>
                </children>
             </HBox>
             <ScrollPane fx:id="scrollPane" prefHeight="437.0" prefWidth="358.0">
