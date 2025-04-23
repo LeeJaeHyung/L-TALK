@@ -18,6 +18,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -31,7 +33,17 @@ public class DataService {
             case NEW_CHAT -> newChat(serverResponse);
             case SIGNUP -> signup(serverResponse);
             case READ_CHAT -> readChat(serverResponse);
+            case GET_VOICE_SERVER_IP -> joinVoiceServer(serverResponse);
+            case RESPONSE_CREATE_CHATROOM_MEMBER -> startingVoiceChat(serverResponse);
         }
+    }
+
+    private void startingVoiceChat(ServerResponse serverResponse) {
+        new VoiceService().startingVoiceChat();
+    }
+
+    private void joinVoiceServer(ServerResponse serverResponse) throws SocketException, UnknownHostException {
+        new VoiceService().connectVoiceServer(serverResponse.getVoiceServerIPResponse());
     }
 
     private void readChat(ServerResponse serverResponse) throws IOException {
