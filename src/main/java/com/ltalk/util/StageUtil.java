@@ -13,6 +13,7 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
+import static com.ltalk.controller.FriendSearchController.friendSearchIsOpened;
 import static com.ltalk.controller.SocketController.disconnect;
 
 public class StageUtil {
@@ -32,7 +33,23 @@ public class StageUtil {
         });
     }
 
-    public void importBasicsEvent(AnchorPane acp, Stage stage, Button closeButton, boolean isMain){
+    public void importChatBasicEvent(Node node, Stage stage, Button closeButton){
+        stageMove(node,stage);
+        closeBtnEvent(closeButton, node);
+    }
+
+    public void closeBtnEvent(Button closeButton, Node node){
+        closeButton.setOnAction(event -> {
+            Stage stage = (Stage) node.getScene().getWindow();
+            if (stage != null) {
+                stage.close();
+            }
+            friendSearchIsOpened = false;
+        });
+
+    }
+
+    public void importBasicsEvent(Node acp, Stage stage, Button closeButton, boolean isMain){
         stageMove(acp, stage);
         if(isMain){
             closeButton.setOnAction(event -> {
@@ -58,6 +75,22 @@ public class StageUtil {
 
 
     public void stageMove(Node node, Stage stage) {
+        if(stage != null){
+            node.setOnMousePressed((event) -> {
+                x = event.getSceneX();
+                y = event.getSceneY();
+            });
+
+            node.setOnMouseDragged((event) -> {
+                stage.setX(event.getScreenX() - x);
+                stage.setY(event.getScreenY() - y);
+            });
+        }
+    }
+
+    public void stageMove(Node node){
+        Stage stage = (Stage) node.getScene().getWindow();
+        System.out.println(stage==null);
         if(stage != null){
             node.setOnMousePressed((event) -> {
                 x = event.getSceneX();

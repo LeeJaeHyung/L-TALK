@@ -1,10 +1,25 @@
 package com.ltalk.service;
 
+import com.ltalk.dto.FriendDTO;
+import com.ltalk.entity.Data;
+import com.ltalk.enums.ProtocolType;
+import com.ltalk.request.FriendRequest;
+import com.ltalk.request.FriendSearchRequest;
+
+import static com.ltalk.controller.SocketController.sendData;
+
 public class FriendService {
 
+    public void searchFriend(String userName){
+        sendData(new Data(ProtocolType.FRIEND_SEARCH, new FriendSearchRequest(userName)));
+    }
 
     public void addFriend() {
         DataService dataService = new DataService();
         dataService.requestFriend();
+    }
+
+    public void requestFriend(FriendDTO dto) {
+       sendData(new Data(ProtocolType.REQUEST_FRIEND, new FriendRequest(dto)));
     }
 }

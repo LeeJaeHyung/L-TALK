@@ -14,6 +14,7 @@ public class ServerResponse {
     private NewChatResponse newChatResponse;
     private ReadChatResponse readChatResponse;
     private VoiceServerIPResponse voiceServerIPResponse;
+    private FriendSearchResponse friendSearchResponse;
 
     public ServerResponse(ProtocolType protocolType, boolean status, ChatResponse chatResponse) {
         this.protocolType = protocolType;

@@ -23,6 +23,7 @@ import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import static com.ltalk.controller.FriendSearchController.friendSearchController;
 import static com.ltalk.controller.SocketController.sendData;
 
 public class DataService {
@@ -35,6 +36,7 @@ public class DataService {
             case READ_CHAT -> readChat(serverResponse);
             case GET_VOICE_SERVER_IP -> joinVoiceServer(serverResponse);
             case RESPONSE_CREATE_CHATROOM_MEMBER -> startingVoiceChat(serverResponse);
+            case FRIEND_SEARCH -> friendSearch(serverResponse);
         }
     }
 
@@ -122,5 +124,10 @@ public class DataService {
         sendData(data);
     }
 
+    public void friendSearch(ServerResponse serverResponse){
+        if(friendSearchController!=null){
+            friendSearchController.setScrPane(serverResponse.getFriendSearchResponse().getFriendDTOList());
+        }
+    }
 
 }

@@ -124,8 +124,24 @@ public class MainController implements Initializable {
     private void addFriendButtonEvent(){
         addFriendButton.setCursor(Cursor.HAND);
         addFriendButton.setOnMouseClicked(event -> {
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/friendSearch-view.fxml"));
+            Scene popupScene;
+            Stage popup = new Stage();
+            try {
+                popupScene = new Scene(fxmlLoader.load(), 400, 600);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            popup.setTitle("친구 검색");
+            popup.initOwner(stage); // 소유자 창 설정
+            setStageUtil(popup);
+            popup.setScene(popupScene);
+            popup.initModality(javafx.stage.Modality.APPLICATION_MODAL); // 모달 창 설정
+            popup.show();
+
             FriendService friendService = new FriendService();
-            friendService.addFriend();
+//            friendService.addFriend();
         });
     }
 
