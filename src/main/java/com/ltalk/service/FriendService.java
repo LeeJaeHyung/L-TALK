@@ -1,5 +1,6 @@
 package com.ltalk.service;
 
+import com.ltalk.controller.MainController;
 import com.ltalk.dto.FriendDTO;
 import com.ltalk.entity.Data;
 import com.ltalk.enums.ProtocolType;
@@ -20,6 +21,8 @@ public class FriendService {
     }
 
     public void requestFriend(FriendDTO dto) {
-       sendData(new Data(ProtocolType.REQUEST_FRIEND, new FriendRequest(dto)));
+        if (!MainController.member.getUsername().equals(dto.getFriendName())){
+            sendData(new Data(ProtocolType.REQUEST_FRIEND, new FriendRequest(dto)));
+        }
     }
 }
