@@ -71,11 +71,23 @@ public class VoiceService {
     }
 
     public static void send(String voiceServerIP, int voiceServerPort) throws IOException, LineUnavailableException {
-
-
         AudioFormat format = new AudioFormat(8000.0f, 16, 1, true, false);
-        DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-        TargetDataLine mic = (TargetDataLine) AudioSystem.getLine(info);
+
+        // ✅ 기본 입력 장치 (주 사운드 캡처 드라이버) 선택
+        Mixer.Info[] mixers = AudioSystem.getMixerInfo();
+        Mixer inputMixer = null;
+        for (Mixer.Info mixerInfo : mixers) {
+            if (mixerInfo.getName().contains("주 사운드 캡처 드라이버")) {
+                inputMixer = AudioSystem.getMixer(mixerInfo);
+                break;
+            }
+        }
+        if (inputMixer == null) {
+            throw new LineUnavailableException("기본 입력 장치(주 사운드 캡처 드라이버)를 찾을 수 없습니다.");
+        }
+
+        DataLine.Info targetInfo = new DataLine.Info(TargetDataLine.class, format);
+        TargetDataLine mic = (TargetDataLine) inputMixer.getLine(targetInfo);
         mic.open(format);
         mic.start();
 
