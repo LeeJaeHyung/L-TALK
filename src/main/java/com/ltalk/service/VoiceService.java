@@ -71,6 +71,8 @@ public class VoiceService {
     }
 
     public static void send(String voiceServerIP, int voiceServerPort) throws IOException, LineUnavailableException {
+
+
         AudioFormat format = new AudioFormat(8000.0f, 16, 1, true, false);
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
         TargetDataLine mic = (TargetDataLine) AudioSystem.getLine(info);

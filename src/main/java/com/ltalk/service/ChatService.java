@@ -6,6 +6,7 @@ import com.ltalk.controller.SocketController;
 import com.ltalk.dto.ChatDTO;
 import com.ltalk.dto.ChatRoomDTO;
 import com.ltalk.dto.ChatRoomMemberDTO;
+import com.ltalk.dto.FriendDTO;
 import com.ltalk.entity.Data;
 import com.ltalk.enums.ChatRoomType;
 import com.ltalk.enums.ProtocolType;
@@ -34,11 +35,11 @@ public class ChatService {
 //        SocketController.sendData(new Data(ProtocolType.CHAT_LIST, member.getUsername()));
 //    }
 
-    public void creatRoom() {
+    public void creatRoom(FriendDTO friendDTO1) {
         ChatRoomType roomType = ChatRoomType.PRIVATE;
-        String chatName = "테스트용";
+        String chatName = member.getUsername()+friendDTO1.getFriendName();
         List<String> chatRoomMembers = new ArrayList<>();
-        chatRoomMembers.add("asd");
+        chatRoomMembers.add(friendDTO1.getFriendName());
         chatRoomMembers.add(MainController.getMember().getUsername());
         ChatRoomCreatRequest chatRoomCreatRequest = new ChatRoomCreatRequest(chatName, roomType ,chatRoomMembers);
         sendData(new Data(ProtocolType.CREATE_CHATROOM, chatRoomCreatRequest));

@@ -148,12 +148,20 @@ public class MainController implements Initializable {
     private void addChatRoomEvent(){
         addChatRoomButton.setCursor(Cursor.HAND);
         addChatRoomButton.setOnMouseClicked(event -> {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/createChatRoom-view.fxml"));
+            Scene popupScene;
+            Stage popup = new Stage();
             try {
-                ChatService chatService = new ChatService();
-                chatService.creatRoom();
+                popupScene = new Scene(fxmlLoader.load(), 600, 400);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            popup.setTitle("채팅방 생성");
+            popup.initOwner(stage); // 소유자 창 설정
+            setStageUtil(popup);
+            popup.setScene(popupScene);
+            popup.initModality(javafx.stage.Modality.APPLICATION_MODAL); // 모달 창 설정
+            popup.show();
         });
     }
 
@@ -224,7 +232,12 @@ public class MainController implements Initializable {
                         ChatService service = new ChatService();
                         List<ChatDTO> chatDTOList = controller.getChatRoomdto().getChats();
                         synchronized (chatDTOList){
-                            service.readChat(chatRoom.getId(), chatDTOList.get(chatDTOList.size()-1).getChatId(), true);
+                            if (!chatDTOList.isEmpty()) {
+                                service.readChat(chatRoom.getId(), chatDTOList.get(chatDTOList.size() - 1).getChatId(), true);
+                            } else {
+                                System.out.println("채팅이 존재하지 않습니다.");
+                                // 빈 채팅방일 경우 다른 처리 (예: 알림창 띄우기 등)
+                            }
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
