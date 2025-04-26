@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 
-import static com.ltalk.controller.MainController.member;
+import static com.ltalk.controller.MainController.*;
 import static com.ltalk.controller.SocketController.sendData;
 
 public class VoiceService {
@@ -49,7 +49,7 @@ public class VoiceService {
     }
 
     public void startingVoiceChat(){
-        new Thread(() -> {
+        voiceSendThread = new Thread(() -> {
             try {
                 send(voiceServerIP, voiceServerPort);
             } catch (IOException e) {
@@ -57,9 +57,8 @@ public class VoiceService {
             } catch (LineUnavailableException e) {
                 throw new RuntimeException(e);
             }
-        }).start();
-
-        new Thread(()->{
+        });
+        voiceRecieveThread = new Thread(()->{
             try {
                 receive();
             } catch (IOException e) {
@@ -67,7 +66,9 @@ public class VoiceService {
             } catch (LineUnavailableException e) {
                 throw new RuntimeException(e);
             }
-        }).start();
+        });
+        voiceSendThread.start();
+        voiceRecieveThread.start();
     }
 
     public static void send(String voiceServerIP, int voiceServerPort) throws IOException, LineUnavailableException {

@@ -163,9 +163,14 @@ public class ChatController implements Initializable {
 
     private void send() throws IOException {
         String message = textArea.getText();
-        ChatService chatService = new ChatService();
-        chatService.chat(chatRoomdto.getId(), MainController.getMember().getId(),message);
-        addChat(message);
+        if(!message.equals("")){
+            ChatService chatService = new ChatService();
+            chatService.chat(chatRoomdto.getId(), MainController.getMember().getId(),message);
+            addChat(message);
+        }
+        Platform.runLater(() -> {
+            textArea.clear();
+        });
     }
 
     private void addChat(String message) throws IOException {

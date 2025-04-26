@@ -58,6 +58,8 @@ public class MainController implements Initializable {
     public static List<ChatRoomDTO> chatRoomList;
     public static Map<Long, ChatController> chatControllerMap = new ConcurrentHashMap<>();
     private ViewBoxEnum viewBoxEnum;
+    public static Thread voiceRecieveThread = null;
+    public static Thread voiceSendThread = null;
 
 
     @FXML

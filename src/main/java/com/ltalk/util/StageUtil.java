@@ -54,8 +54,8 @@ public class StageUtil {
         if(isMain){
             closeButton.setOnAction(event -> {
                 try {
-                    disconnect();
                     stage.close();
+                    Platform.exit();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

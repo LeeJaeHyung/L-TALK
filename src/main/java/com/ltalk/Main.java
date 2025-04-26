@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.ltalk.controller.MainController.voiceRecieveThread;
+import static com.ltalk.controller.MainController.voiceSendThread;
+import static com.ltalk.service.VoiceService.*;
 import static com.ltalk.util.StageUtil.setStageUtil;
 
 public class Main extends Application {
@@ -31,5 +34,33 @@ public class Main extends Application {
         lTalkController.setStage(stage);
         stage.show();
         SocketController.getInstance();
+    }
+
+    @Override
+    public void stop() throws Exception {
+
+        SocketController socketController = SocketController.getInstance();
+        if (socketController != null) {
+            SocketController.disconnect();  // ← 수정됨!
+        }
+
+        // 송수신 쓰레드 안전하게 중단
+        if (voiceRecieveThread != null && voiceRecieveThread.isAlive()) {
+            voiceRecieveThread.interrupt();
+        }
+
+        if (voiceSendThread != null && voiceSendThread.isAlive()) {
+            voiceSendThread.interrupt();
+        }
+
+        // UDP 소켓 닫기
+        if (receiveSocket != null && !receiveSocket.isClosed()) {
+            receiveSocket.close();
+        }
+        if(sendSocket != null && !sendSocket.isClosed()){
+            sendSocket.close();
+        }
+
+        super.stop();
     }
 }
