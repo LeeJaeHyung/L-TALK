@@ -16,6 +16,8 @@ public class Data {
     ReadChatRequest readChatRequest;
     JoinVoiceChatRequest joinVoiceChatRequest;
     FriendSearchRequest friendSearchRequest;
+    ChatRoomCreationCheckRequest chatRoomCreationCheckRequest;
+    ChatRoomListRequest chatRoomListRequest;
     String username;
 
     public Data(ProtocolType protocolType) {
@@ -70,5 +72,15 @@ public class Data {
     public Data(ProtocolType protocolType, FriendSearchRequest friendSearchRequest) {
         this.protocolType = protocolType;
         this.friendSearchRequest = friendSearchRequest;
+    }
+
+    public Data(ProtocolType protocolType, ChatRoomCreationCheckRequest chatRoomCreationCheckRequest) {
+        this.protocolType = protocolType;
+        this.chatRoomCreationCheckRequest = chatRoomCreationCheckRequest;
+    }
+
+    public Data(ProtocolType protocolType, ChatRoomListRequest chatRoomListRequest) {
+        this.protocolType = protocolType;
+        this.chatRoomListRequest = chatRoomListRequest;
     }
 }

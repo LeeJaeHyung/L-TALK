@@ -10,6 +10,7 @@ import com.ltalk.dto.MemberDTO;
 import com.ltalk.entity.Data;
 import com.ltalk.entity.ServerResponse;
 import com.ltalk.enums.ProtocolType;
+import com.ltalk.request.ChatRoomListRequest;
 import com.ltalk.request.FriendRequest;
 import com.ltalk.util.StageUtil;
 import javafx.application.Platform;
@@ -23,7 +24,10 @@ import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import static com.ltalk.controller.CreateChatRoomController.createChatRoomController;
+import static com.ltalk.controller.CreateChatRoomController.createChatRoomIsOpened;
 import static com.ltalk.controller.FriendSearchController.friendSearchController;
+import static com.ltalk.controller.MainController.*;
 import static com.ltalk.controller.SocketController.sendData;
 
 public class DataService {
@@ -37,6 +41,30 @@ public class DataService {
             case GET_VOICE_SERVER_IP -> joinVoiceServer(serverResponse);
             case RESPONSE_CREATE_CHATROOM_MEMBER -> startingVoiceChat(serverResponse);
             case FRIEND_SEARCH -> friendSearch(serverResponse);
+            case CAN_CREATE_CHAT_ROOM -> canCreateChatRoom(serverResponse);
+            case CREATE_CHATROOM -> createChatRoom(serverResponse);
+        }
+    }
+
+    private void createChatRoom(ServerResponse serverResponse) {
+        if (createChatRoomController!=null&&createChatRoomIsOpened){
+            Platform.runLater(()->{
+                createChatRoomController.stage.close();
+                try {
+                    chatRoomList.add(serverResponse.getCreateChatRoomResponse().getChatRoomDTO());
+                    mainController.initFriendBox();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+    }
+
+    private void canCreateChatRoom(ServerResponse serverResponse) {
+        if (createChatRoomController!=null&&createChatRoomIsOpened){
+            Platform.runLater(()->{
+                createChatRoomController.setFriendFiled(serverResponse.getChatRoomCreationCheckResponse().getFriendDTOList());
+            });
         }
     }
 
@@ -60,7 +88,11 @@ public class DataService {
     private void newChat(ServerResponse serverResponse) throws IOException {
         ChatService chatService = new ChatService();
         ChatDTO chatDTO = serverResponse.getNewChatResponse().getDto();
-        chatService.newChat(chatDTO);
+        try{
+            chatService.newChat(chatDTO);
+        }catch (NullPointerException e){
+            sendData(new Data(ProtocolType.CHATROOM_LIST, new ChatRoomListRequest(member.getId())));
+        }
         System.out.println("newChat 서버로 부터 전송받음");
         System.out.println("getChatRoomId : "+chatDTO.getChatRoomId());
         if(!MainController.getMember().getId().equals(chatDTO.getSenderId())&& chatService.checkOpenRoom(chatDTO.getChatRoomId())){

@@ -44,6 +44,8 @@ import static com.ltalk.util.StageUtil.setStageUtil;
 @Getter
 @Setter
 public class MainController implements Initializable {
+
+    public static MainController mainController;
     @Getter
     @Setter
     private static Stage stage;
@@ -90,6 +92,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        mainController = this;
         System.out.println(member.getUsername());
         for(FriendDTO friend : friendList) {
             System.out.println(friend);
@@ -131,7 +134,7 @@ public class MainController implements Initializable {
             Scene popupScene;
             Stage popup = new Stage();
             try {
-                popupScene = new Scene(fxmlLoader.load(), 400, 600);
+                popupScene = new Scene(fxmlLoader.load(), 400, 274);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -154,7 +157,7 @@ public class MainController implements Initializable {
             Scene popupScene;
             Stage popup = new Stage();
             try {
-                popupScene = new Scene(fxmlLoader.load(), 600, 400);
+                popupScene = new Scene(fxmlLoader.load(), 400, 274);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -188,7 +191,7 @@ public class MainController implements Initializable {
        initFriendBox();
     }
 
-    private void initFriendBox() throws IOException {
+    public void initFriendBox() throws IOException {
         friendBox.setStyle("-fx-background-color: #ffffff");
         ObservableList children = friendBox.getChildren();
         Text text = new Text("채팅방");
@@ -250,7 +253,7 @@ public class MainController implements Initializable {
                     Scene popupScene;
                     Stage popup = new Stage();
                     try {
-                        popupScene = new Scene(fxmlLoader.load(), 400, 600);
+                        popupScene = new Scene(fxmlLoader.load(), 360, 590);
                         controller.init(popup);
                         System.out.println(chatRoom==null);
                         System.out.println(chatRoom);

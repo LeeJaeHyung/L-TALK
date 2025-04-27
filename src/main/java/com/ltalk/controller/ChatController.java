@@ -8,6 +8,7 @@ import com.ltalk.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -76,6 +77,8 @@ public class ChatController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        chatBox.setStyle("-fx-background-color: #BACEE0");
+        acp.setStyle("-fx-background-color: #BACEE0");
 
     }
 
@@ -207,9 +210,13 @@ public class ChatController implements Initializable {
     public Label makeMessage(ChatDTO chatDTO, boolean isMyChat){
         Label message = new Label(chatDTO.getMessage());
         if(isMyChat){
-            message.setStyle("-fx-background-color: yellow;");
+            message.setStyle("-fx-background-color: yellow;" +
+                    "    -fx-background-radius: 5; /* 둥글게! */\n" +
+                    "    -fx-padding: 5 10 5 10; ");
         }else{
-            message.setStyle("-fx-background-color: white;");
+            message.setStyle("-fx-background-color: white;" +
+                    "    -fx-background-radius: 5; /* 둥글게! */\n" +
+                    "    -fx-padding: 5 10 5 10; ");
         }
         return message;
     }
@@ -221,6 +228,8 @@ public class ChatController implements Initializable {
         HBox chatPackage = new HBox();
         HBox messageTimeCountBox = new HBox();
         VBox messagePackage = new VBox();
+        messagePackage.setPadding(new Insets(8));
+        messageTimeCountBox.setPadding(new Insets(3));
         VBox timeBox = new VBox();
         Text time = new Text(chatFormatter.format(chatDTO.getCreatedAt()));
         Text unReadCount = new Text(Integer.toString(chatDTO.getUnreadCount()));
@@ -258,6 +267,7 @@ public class ChatController implements Initializable {
         VBox timeBox = new VBox();
         messageBox.getChildren().add(message);
         HBox messageTimeCountBox = new HBox();
+        messageTimeCountBox.setPadding(new Insets(3));
         int timeIdx;
         if(isMyChat){
             timeIdx = 0;
@@ -277,6 +287,7 @@ public class ChatController implements Initializable {
             beforeTimeBox.getChildren().clear();
         }
         timeBox.getChildren().addAll(new Text(Integer.toString(chatDTO.getUnreadCount())), new Text(chatDTO.getCreatedAt().format(chatFormatter)));
+
         messagePackage.getChildren().add(messageTimeCountBox);
 
         return chatPackage;

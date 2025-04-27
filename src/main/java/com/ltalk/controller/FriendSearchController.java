@@ -1,18 +1,20 @@
 package com.ltalk.controller;
 
 import com.ltalk.dto.FriendDTO;
+import com.ltalk.enums.FriendStatus;
 import com.ltalk.service.FriendService;
 import com.ltalk.util.StageUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -63,6 +65,7 @@ public class FriendSearchController implements Initializable {
             }
         });
         searchFriend();
+        scrPBox.setPadding(new Insets(10, 10, 10, 10));
     }
 
     public void searchFriend(){
@@ -77,16 +80,37 @@ public class FriendSearchController implements Initializable {
         Platform.runLater(() -> {
             scrPBox.getChildren().clear();
             for (FriendDTO dto : friendDTOList) {
+                if(dto.getFriendName().equals(MainController.getMember().getUsername()))continue;
+                if(checkAlreadyFriend(dto.getFriendName()))continue;
+                HBox hBox = new HBox();
                 Label label = new Label(dto.getFriendName());
-                scrPBox.getChildren().add(label);
-                label.setUserData(dto);
-                label.setOnMouseClicked(mouseEvent -> {
-                    Label clickedLabel = (Label) mouseEvent.getSource();  // getSource() 사용!
-                    friendService.requestFriend((FriendDTO) clickedLabel.getUserData());
+                label.setStyle("-fx-font-weight: bold;" +
+                        "-fx-background-color: white;" +
+                        "-fx-pref-width: 300px;" +
+                        "-fx-pref-height: 50px;" +
+                        "-fx-alignment: center;"
+                );
+                scrPBox.getChildren().add(hBox);
+                Button button = new Button("추가");
+                button.setPrefHeight(50);
+                HBox.setMargin(label,new Insets(5));
+                hBox.getChildren().addAll(label,button);
+                button.setUserData(dto);
+                button.setOnMouseClicked(mouseEvent -> {
+                    Button clickedButton = (Button) mouseEvent.getSource();  // getSource() 사용!
+                    friendService.requestFriend((FriendDTO) clickedButton.getUserData());
                 });
 
             }
         });
+    }
+
+    public boolean checkAlreadyFriend(String friendName){
+        List<FriendDTO> fiendList = MainController.getFriendList();
+        for (FriendDTO friendDTO : fiendList) {
+            if (friendDTO.getFriendName().equals(friendName)&&friendDTO.getStatus()== FriendStatus.ACCEPTED) return true;
+        }
+        return false;
     }
 
 }
