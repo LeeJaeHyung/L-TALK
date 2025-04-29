@@ -17,6 +17,7 @@ public class ServerResponse {
     private FriendSearchResponse friendSearchResponse;
     private ChatRoomCreationCheckResponse chatRoomCreationCheckResponse;
     private CreateChatRoomResponse createChatRoomResponse;
+    private RequestFriendResponse requestFriendResponse;
 
 
     public ServerResponse(ProtocolType protocolType, boolean status, ChatResponse chatResponse) {

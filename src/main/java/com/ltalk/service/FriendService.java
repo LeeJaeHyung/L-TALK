@@ -15,10 +15,6 @@ public class FriendService {
         sendData(new Data(ProtocolType.FRIEND_SEARCH, new FriendSearchRequest(userName)));
     }
 
-    public void addFriend() {
-        DataService dataService = new DataService();
-        dataService.requestFriend();
-    }
 
     public void requestFriend(FriendDTO dto) {
         if (!MainController.member.getUsername().equals(dto.getFriendName())){

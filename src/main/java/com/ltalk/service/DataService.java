@@ -43,6 +43,7 @@ public class DataService {
             case FRIEND_SEARCH -> friendSearch(serverResponse);
             case CAN_CREATE_CHAT_ROOM -> canCreateChatRoom(serverResponse);
             case CREATE_CHATROOM -> createChatRoom(serverResponse);
+            case REQUEST_FRIEND -> requestFriend(serverResponse);
         }
     }
 
@@ -50,14 +51,16 @@ public class DataService {
         if (createChatRoomController!=null&&createChatRoomIsOpened){
             Platform.runLater(()->{
                 createChatRoomController.stage.close();
-                try {
-                    chatRoomList.add(serverResponse.getCreateChatRoomResponse().getChatRoomDTO());
-                    mainController.initFriendBox();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
             });
         }
+        chatRoomList.add(serverResponse.getCreateChatRoomResponse().getChatRoomDTO());
+        Platform.runLater(()-> {
+            try {
+                mainController.initFriendBox();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void canCreateChatRoom(ServerResponse serverResponse) {
@@ -91,7 +94,7 @@ public class DataService {
         try{
             chatService.newChat(chatDTO);
         }catch (NullPointerException e){
-            sendData(new Data(ProtocolType.CHATROOM_LIST, new ChatRoomListRequest(member.getId())));
+            e.printStackTrace();
         }
         System.out.println("newChat 서버로 부터 전송받음");
         System.out.println("getChatRoomId : "+chatDTO.getChatRoomId());
@@ -151,9 +154,10 @@ public class DataService {
         }
     }
 
-    public void requestFriend(){
-        Data data = new Data(ProtocolType.REQUEST_FRIEND, new FriendRequest(MainController.getMember().getUsername(), "asd"));
-        sendData(data);
+    public void requestFriend(ServerResponse serverResponse){
+        FriendDTO friendDTO = serverResponse.getRequestFriendResponse().getFriendDTO();
+        List<FriendDTO> friendDTOList = MainController.getFriendList();
+        friendDTOList.add(friendDTO);
     }
 
     public void friendSearch(ServerResponse serverResponse){

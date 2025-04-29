@@ -44,6 +44,7 @@ public class FriendSearchController implements Initializable {
     private FriendService friendService = new FriendService();
     public static FriendSearchController friendSearchController;
     public static boolean friendSearchIsOpened = false;
+    private Stage stage;
 
 
 
@@ -57,7 +58,7 @@ public class FriendSearchController implements Initializable {
             if (newScene != null) {
                 newScene.windowProperty().addListener((obsWin, oldWindow, newWindow) -> {
                     if (newWindow != null) {
-                        Stage stage = (Stage) newWindow;  // ✅ 여기서 Stage 안전하게 확보됨
+                        stage = (Stage) newWindow;  // ✅ 여기서 Stage 안전하게 확보됨
                         StageUtil stageUtil = new StageUtil();
                         stageUtil.importChatBasicEvent(borderPane, stage, closeBtn);
                     }
@@ -99,6 +100,9 @@ public class FriendSearchController implements Initializable {
                 button.setOnMouseClicked(mouseEvent -> {
                     Button clickedButton = (Button) mouseEvent.getSource();  // getSource() 사용!
                     friendService.requestFriend((FriendDTO) clickedButton.getUserData());
+                    Platform.runLater(()->{
+                        stage.close();
+                    });
                 });
 
             }
