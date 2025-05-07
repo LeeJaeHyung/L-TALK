@@ -75,7 +75,7 @@ public class DataService {
         new VoiceService().startingVoiceChat();
     }
 
-    private void joinVoiceServer(ServerResponse serverResponse) throws SocketException, UnknownHostException {
+    private void joinVoiceServer(ServerResponse serverResponse) throws IOException {
         new VoiceService().connectVoiceServer(serverResponse.getVoiceServerIPResponse());
     }
 

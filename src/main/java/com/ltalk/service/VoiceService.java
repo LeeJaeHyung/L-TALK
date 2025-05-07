@@ -6,7 +6,9 @@ import com.ltalk.request.JoinVoiceChatRequest;
 import com.ltalk.response.VoiceServerIPResponse;
 
 import javax.sound.sampled.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.*;
 import java.nio.ByteBuffer;
 
@@ -31,7 +33,7 @@ public class VoiceService {
         voiceChatRoomId = chatRoomId;
     }
 
-    public void connectVoiceServer(VoiceServerIPResponse voiceServerIPResponse) throws SocketException, UnknownHostException {
+    public void connectVoiceServer(VoiceServerIPResponse voiceServerIPResponse) throws IOException {
         voiceServerIP = voiceServerIPResponse.getIp();
         voiceServerPort = voiceServerIPResponse.getPort();
         System.out.println(voiceServerIPResponse.getPort());
@@ -42,9 +44,11 @@ public class VoiceService {
         System.out.println(receivePort);
         sendSocket = new DatagramSocket(0);
         // 2. 자신의 IP 확인
-        String localIp = InetAddress.getLocalHost().getHostAddress();
+        URL url = new URL("https://checkip.amazonaws.com/");
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+        String publicIP = in.readLine();
         // 내가 열은 포트의 정보데이터 전송
-        sendData(new Data(ProtocolType.JOIN_VOICE_CHAT, new JoinVoiceChatRequest(voiceServerIPResponse.getChatRoomId(),member.getId(), member.getUsername(), localIp, receivePort)));
+        sendData(new Data(ProtocolType.JOIN_VOICE_CHAT, new JoinVoiceChatRequest(voiceServerIPResponse.getChatRoomId(),member.getId(), member.getUsername(), publicIP, receivePort)));
 
     }
 
