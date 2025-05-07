@@ -72,7 +72,7 @@ public class VoiceService {
     }
 
     public static void send(String voiceServerIP, int voiceServerPort) throws IOException, LineUnavailableException {
-        AudioFormat format = new AudioFormat(8000.0f, 16, 1, true, false);
+        AudioFormat format = new AudioFormat(16000.0f, 16, 1, true, false);
 
         // ✅ 기본 입력 장치 (주 사운드 캡처 드라이버) 선택
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();
@@ -92,8 +92,8 @@ public class VoiceService {
         mic.open(format);
         mic.start();
 
-        byte[] audioBuffer = new byte[320]; // 320 byte = 20ms (8000Hz, 16bit, mono)
-        ByteBuffer sendBuffer = ByteBuffer.allocate(336); // 8 + 8 + 320
+        byte[] audioBuffer = new byte[640]; // 320 byte = 20ms (8000Hz, 16bit, mono)
+        ByteBuffer sendBuffer = ByteBuffer.allocate(656); // 8 + 8 + 320
 
         System.out.println("전송 시작");
         while (true) {
@@ -112,13 +112,14 @@ public class VoiceService {
     }
 
     public static void receive() throws IOException, LineUnavailableException {
-        AudioFormat format = new AudioFormat(8000.0f, 16, 1, true, false);
+        // 둘 다 같은 format 써야 함
+        AudioFormat format = new AudioFormat(16000.0f, 16, 1, true, false);
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
         SourceDataLine speaker = (SourceDataLine) AudioSystem.getLine(info);
         speaker.open(format);
         speaker.start();
 
-        byte[] buffer = new byte[336]; // 8 + 8 + 320
+        byte[] buffer = new byte[656]; // 8 + 8 + 320
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
         System.out.println("수신 대기 중...");

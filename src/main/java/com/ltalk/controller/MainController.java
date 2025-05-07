@@ -192,6 +192,7 @@ public class MainController implements Initializable {
     }
 
     public void initFriendBox() throws IOException {
+        friendBox.getChildren().clear();
         friendBox.setStyle("-fx-background-color: #ffffff");
         ObservableList children = friendBox.getChildren();
         Text text = new Text("채팅방");
