@@ -51,7 +51,7 @@ public class SocketController {
         }
     }
 
-    public static final String SERVER_ADDRESS = "localhost";
+    public static final String SERVER_ADDRESS = "ltalk.asuscomm.com";
     public static final int SERVER_PORT = 7623;
     public static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())

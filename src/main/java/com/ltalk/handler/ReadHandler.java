@@ -3,11 +3,9 @@ package com.ltalk.handler;
 import com.ltalk.controller.SocketController;
 import com.ltalk.entity.ServerResponse;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.security.NoSuchAlgorithmException;
 
 public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
 
@@ -38,34 +36,45 @@ public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
             return;
         }
 
-        buffer.flip();
-
         if (readingLength) {
+            buffer.flip();
             if (buffer.remaining() >= 4) {
-                int messageLength = buffer.getInt(); //  메시지 길이 읽기
+                int messageLength = buffer.getInt();
                 System.out.println("수신할 데이터 크기: " + messageLength);
-                dataBuffer = ByteBuffer.allocate(messageLength); //  길이에 맞는 버퍼 생성
+
+                dataBuffer = ByteBuffer.allocate(messageLength);
                 readingLength = false;
-                receiveResponse(); //  본문 데이터 읽기
+
+                channel.read(dataBuffer, dataBuffer, this);  // 처음 본문 읽기
+            } else {
+                channel.read(lengthBuffer, lengthBuffer, this); // 부족 시 다시 읽기
             }
         } else {
-            byte[] receivedData = new byte[dataBuffer.remaining()];
-            dataBuffer.get(receivedData);
-            String responseJson = new String(receivedData);
-            System.out.println("서버 응답 JSON: " + responseJson);
+            if (dataBuffer.hasRemaining()) {
+                channel.read(dataBuffer, dataBuffer, this); // 아직 다 못 받았으면 계속
+            } else {
+                dataBuffer.flip();
+                byte[] receivedData = new byte[dataBuffer.remaining()];
+                dataBuffer.get(receivedData);
+                String responseJson = new String(receivedData);
+                System.out.println("서버 응답 JSON: " + responseJson);
 
-            try {
-                ServerResponse responseData = SocketController.gson.fromJson(responseJson, ServerResponse.class);
-                System.out.println("서버 응답 객체: " + responseData);
-                SocketController.getInstance().interpret(responseData);
-            } catch (IOException | NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
+                try {
+                    ServerResponse responseData = SocketController.gson.fromJson(responseJson, ServerResponse.class);
+                    System.out.println("서버 응답 객체: " + responseData);
+                    SocketController.getInstance().interpret(responseData);
+                } catch (Exception e) {
+                    System.err.println("❌ JSON 파싱 실패:");
+                    e.printStackTrace();
+                }
+
+                readingLength = true;
+                lengthBuffer.clear();
+                channel.read(lengthBuffer, lengthBuffer, this); // 다음 메시지 준비
             }
-
-            readingLength = true; //  다음 응답을 위해 길이부터 다시 읽도록 설정
-            receiveResponse();
         }
     }
+
 
     @Override
     public void failed(Throwable exc, ByteBuffer buffer) {
