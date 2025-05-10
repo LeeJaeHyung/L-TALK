@@ -6,10 +6,10 @@ import com.ltalk.request.JoinVoiceChatRequest;
 import com.ltalk.response.VoiceServerIPResponse;
 
 import javax.sound.sampled.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
 import static com.ltalk.controller.MainController.*;
@@ -40,15 +40,41 @@ public class VoiceService {
         System.out.println("voiceServerIP : "+voiceServerIP+" voiceServerPort :"+voiceServerPort);
         //voiceServer IP, Port 셋팅
         receiveSocket = new DatagramSocket(0);// OS가 가용한 포트 자동 선택
-        receivePort = receiveSocket.getLocalPort();
         System.out.println(receivePort);
         sendSocket = new DatagramSocket(0);
         // 2. 자신의 IP 확인
-        URL url = new URL("https://checkip.amazonaws.com/");
-        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-        String publicIP = in.readLine();
+//        URL url = new URL("https://checkip.amazonaws.com/");
+//        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+//        String publicIP = in.readLine();
+        String publicIP = "localhost";
         // 내가 열은 포트의 정보데이터 전송
-        sendData(new Data(ProtocolType.JOIN_VOICE_CHAT, new JoinVoiceChatRequest(voiceServerIPResponse.getChatRoomId(),member.getId(), member.getUsername(), publicIP, receivePort)));
+
+        //1. 먼저 receiveSocket 을 통해서 채팅방 정보 등록 요청
+        //2. 충분한 크기에 ByteBuffer 생성
+        ByteBuffer sendBuffer = ByteBuffer.allocate(20); // 4+8+8
+        sendBuffer.clear();
+        sendBuffer.putInt(1);
+        sendBuffer.putLong(voiceChatRoomId);
+        sendBuffer.putLong(member.getId());
+        sendBuffer.flip(); // position → 0, limit → 현재 위치
+
+        byte[] sendBytes = new byte[sendBuffer.remaining()];
+        sendBuffer.get(sendBytes);
+        DatagramPacket sendPacket = new DatagramPacket(sendBytes, sendBytes.length, InetAddress.getByName(voiceServerIP), voiceServerPort);
+        receiveSocket.send(sendPacket);// 받을 소켓의 udp 통신을 위해서 데이터 먼저 전송
+
+        System.out.println("핸드 쉐이크 데이터 수신중");
+        byte[] recvBuf = new byte[4];
+        DatagramPacket recvPacket = new DatagramPacket(recvBuf, recvBuf.length);
+        receiveSocket.receive(recvPacket);
+        ByteBuffer receiveBuffer = ByteBuffer.wrap(recvPacket.getData(), 0, recvPacket.getLength());
+
+        int receiveStatus = receiveBuffer.getInt();
+
+        if(receiveStatus == 1){
+            System.out.println("핸드 쉐이크 성공");
+            startingVoiceChat();
+        }
 
     }
 
@@ -97,7 +123,7 @@ public class VoiceService {
         mic.start();
 
         byte[] audioBuffer = new byte[640]; // 320 byte = 20ms (8000Hz, 16bit, mono)
-        ByteBuffer sendBuffer = ByteBuffer.allocate(656); // 8 + 8 + 320
+        ByteBuffer sendBuffer = ByteBuffer.allocate(660); // 8 + 8 + 320
 
         System.out.println("전송 시작");
         while (true) {
@@ -105,6 +131,7 @@ public class VoiceService {
             int count = mic.read(audioBuffer, 0, audioBuffer.length);
             if (count > 0) {
                 sendBuffer.clear();
+                sendBuffer.putInt(0);
                 sendBuffer.putLong(voiceChatRoomId);
                 sendBuffer.putLong(member.getId());
                 sendBuffer.put(audioBuffer, 0, count);
@@ -123,7 +150,7 @@ public class VoiceService {
         speaker.open(format);
         speaker.start();
 
-        byte[] buffer = new byte[656]; // 8 + 8 + 320
+        byte[] buffer = new byte[660]; // 8 + 8 + 320
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
         System.out.println("수신 대기 중...");
@@ -131,7 +158,6 @@ public class VoiceService {
             System.out.println("수신중");
             receiveSocket.receive(packet);
             ByteBuffer receiveBuffer = ByteBuffer.wrap(packet.getData(), 0, packet.getLength());
-
             long receivedChatRoomId = receiveBuffer.getLong();
             long receivedMemberId = receiveBuffer.getLong();
             byte[] audioData = new byte[receiveBuffer.remaining()];

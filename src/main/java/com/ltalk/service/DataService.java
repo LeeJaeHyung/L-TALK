@@ -39,7 +39,6 @@ public class DataService {
             case SIGNUP -> signup(serverResponse);
             case READ_CHAT -> readChat(serverResponse);
             case GET_VOICE_SERVER_IP -> joinVoiceServer(serverResponse);
-            case RESPONSE_CREATE_CHATROOM_MEMBER -> startingVoiceChat(serverResponse);
             case FRIEND_SEARCH -> friendSearch(serverResponse);
             case CAN_CREATE_CHAT_ROOM -> canCreateChatRoom(serverResponse);
             case CREATE_CHATROOM -> createChatRoom(serverResponse);
@@ -71,9 +70,6 @@ public class DataService {
         }
     }
 
-    private void startingVoiceChat(ServerResponse serverResponse) {
-        new VoiceService().startingVoiceChat();
-    }
 
     private void joinVoiceServer(ServerResponse serverResponse) throws IOException {
         new VoiceService().connectVoiceServer(serverResponse.getVoiceServerIPResponse());
