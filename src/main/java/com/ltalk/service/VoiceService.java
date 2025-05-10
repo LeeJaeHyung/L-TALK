@@ -158,6 +158,7 @@ public class VoiceService {
             System.out.println("수신중");
             receiveSocket.receive(packet);
             ByteBuffer receiveBuffer = ByteBuffer.wrap(packet.getData(), 0, packet.getLength());
+            receiveBuffer.getInt();//type 데이터 날려버림
             long receivedChatRoomId = receiveBuffer.getLong();
             long receivedMemberId = receiveBuffer.getLong();
             byte[] audioData = new byte[receiveBuffer.remaining()];
