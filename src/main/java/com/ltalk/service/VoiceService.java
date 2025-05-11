@@ -6,10 +6,13 @@ import com.ltalk.request.JoinVoiceChatRequest;
 import com.ltalk.response.VoiceServerIPResponse;
 
 import javax.sound.sampled.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.URL;
 import java.nio.ByteBuffer;
 
 import static com.ltalk.controller.MainController.*;
@@ -43,10 +46,10 @@ public class VoiceService {
         System.out.println(receivePort);
         sendSocket = new DatagramSocket(0);
         // 2. 자신의 IP 확인
-//        URL url = new URL("https://checkip.amazonaws.com/");
-//        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-//        String publicIP = in.readLine();
-        String publicIP = "localhost";
+        URL url = new URL("https://checkip.amazonaws.com/");
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+        String publicIP = in.readLine();
+//        String publicIP = "localhost";
         // 내가 열은 포트의 정보데이터 전송
 
         //1. 먼저 receiveSocket 을 통해서 채팅방 정보 등록 요청
