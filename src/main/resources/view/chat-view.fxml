@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="acp" prefHeight="590.0" prefWidth="358.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox layoutX="2.0" layoutY="3.0" prefHeight="590.0" prefWidth="358.0">
+         <children>
+            <HBox alignment="TOP_RIGHT" prefHeight="20.0" prefWidth="200.0">
+               <children>
+                   <Button fx:id="hideButton" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                       <graphic>
+                           <ImageView fitHeight="10.0" fitWidth="10.0">
+                               <image>
+                                   <Image url="/images/minimization.png" />
+                               </image>
+                           </ImageView>
+                       </graphic>
+                   </Button>
+                   <Button fx:id="closeButton" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                       <graphic>
+                           <ImageView fitHeight="10.0" fitWidth="10.0">
+                               <image>
+                                   <Image url="/images/close.png" />
+                               </image>
+                           </ImageView>
+                       </graphic>
+                   </Button>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                   <VBox fx:id="titleBox" prefHeight="200.0" prefWidth="100.0">
+                       <children>
+                           <Button fx:id="joinVoiceChat" text="음성채팅 참여" />
+                       </children>
+                   </VBox>
+               </children>
+            </HBox>
+            <ScrollPane fx:id="scrollPane" prefHeight="437.0" prefWidth="358.0">
+               <content>
+                  <VBox fx:id="chatBox" prefHeight="421.0" prefWidth="343.0" />
+               </content></ScrollPane>
+            <VBox alignment="CENTER_RIGHT" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: white;">
+               <children>
+                  <TextArea fx:id="textArea" prefHeight="132.0" prefWidth="267.0" />
+                  <VBox alignment="CENTER_RIGHT" prefHeight="41.0" prefWidth="358.0" style="-fx-background-color: white; -fx-padding: 10;">
+                     <children>
+                        <Button fx:id="sendButton" alignment="CENTER" mnemonicParsing="false" text="전송" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+
+</AnchorPane>

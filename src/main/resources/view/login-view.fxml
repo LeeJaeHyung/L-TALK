@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="acp" maxHeight="590.0" maxWidth="360.0" minHeight="590.0" minWidth="360.0" prefHeight="590.0" prefWidth="360.0" style="-fx-background-color: #FEE500;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ltalk.controller.LTalkController">
+   <children>
+      <HBox alignment="TOP_RIGHT" layoutX="168.0" prefHeight="28.0" prefWidth="190.0">
+         <children>
+            <Button fx:id="hideButton" layoutX="309.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0" style="-fx-background-color: #FEE500;">
+               <graphic>
+                  <ImageView fitHeight="10.0" fitWidth="10.0">
+                     <image>
+                        <Image url="/images/minimization.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="closeButton" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0" style="-fx-background-color: #FEE500;">
+               <graphic>
+                  <ImageView fitHeight="10.0" fitWidth="10.0">
+                     <image>
+                        <Image url="/images/close.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+      <ImageView fitHeight="150.0" fitWidth="174.0" layoutX="104.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="/images/LTalkIcon.png" />
+         </image>
+      </ImageView>
+      <TextField fx:id="idField" layoutX="59.0" layoutY="232.0" prefHeight="38.0" prefWidth="240.0" />
+      <PasswordField fx:id="passwordField" style="-fx-font-family: 'Malgun Gothic';" layoutX="59.0" layoutY="270.0" prefHeight="38.0" prefWidth="240.0" />
+      <Button fx:id="loginButton" layoutX="59.0" layoutY="312.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="240.0" text="로그인" textFill="#7f7f7f" />
+      <CheckBox layoutX="59.0" layoutY="359.0" mnemonicParsing="false" text="자동 로그인" textFill="#7f7519" />
+      <GridPane alignment="CENTER" layoutX="79.0" layoutY="500.0" prefHeight="16.0" prefWidth="200.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <children>
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="15.0" prefWidth="95.0" text="LTalk계정 찾기" textFill="#7f7519" GridPane.rowIndex="1">
+            </Label>
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="비밀번호 재설정" textFill="#7f7519" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            </Label>
+         </children>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+      </GridPane>
+      <Label fx:id="signUpButton" layoutX="138.0" layoutY="447.0" prefHeight="28.0" prefWidth="83.0" text="LTalk 회원가입" />
+   </children>
+</AnchorPane>

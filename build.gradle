@@ -1,0 +1,66 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+group = 'com.ltalk'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // javafx
+    implementation 'org.openjfx:javafx-controls:17.0.6'
+    implementation 'org.openjfx:javafx-fxml:17.0.6'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    // sql + JPA
+    implementation 'mysql:mysql-connector-java:8.0.33'
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'org.hibernate:hibernate-core:5.6.14.Final'
+
+    // gson
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // junit
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+application {
+    mainClass.set('com.ltalk.Main')
+
+    // ★ installDist로 생성되는 bin/*.bat 에 항상 포함될 JVM 옵션
+    // Windows 기준(%APP_HOME%는 배포 루트): JavaFX 모듈 경로 + 모듈 추가
+    applicationDefaultJvmArgs = [
+            '--module-path', '%APP_HOME%\\lib',
+            '--add-modules', 'javafx.controls,javafx.fxml'
+    ]
+}
+
+javafx {
+    version = '17.0.6'
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': application.mainClass.get()
+        )
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+}

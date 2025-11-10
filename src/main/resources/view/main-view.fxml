@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="acp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="358.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ltalk.controller.MainController">
+   <children>
+      <HBox fx:id="hBox" prefHeight="590.0" prefWidth="358.0">
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="599.0" prefWidth="66.0" spacing="20.0" style="-fx-background-color: #ECECED;">
+               <children>
+                  <Button fx:id="friendButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="/images/friend.png" />
+                            </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="chatButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="/images/talk.png" />
+                            </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="addFriendButton" mnemonicParsing="false" text="친구추가" />
+                   <Button fx:id="addChatRoomButton" mnemonicParsing="false" text="채팅방 생성"/>
+               </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets top="35.0" />
+               </padding>
+            </VBox>
+            <ScrollPane fx:id="scrollPane" prefHeight="570.0" prefWidth="292.0" style="-fx-background: transparent; -fx-background-color: transparent;">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="292.0">
+                     <children>
+                        <VBox fx:id="viewVBox" prefHeight="5000.0" prefWidth="292.0" spacing="10.0">
+                           <padding>
+                              <Insets top="15.0" />
+                           </padding>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                     <opaqueInsets>
+                        <Insets top="10.0" />
+                     </opaqueInsets>
+                  </AnchorPane>
+              </content>
+               <HBox.margin>
+                  <Insets top="20.0" />
+               </HBox.margin>
+            </ScrollPane>
+         </children>
+      </HBox>
+       <Button fx:id="hideButton" layoutX="309.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+           <graphic>
+               <ImageView fitHeight="10.0" fitWidth="10.0">
+                   <image>
+                       <Image url="/images/minimization.png" />
+                   </image>
+               </ImageView>
+           </graphic>
+       </Button>
+       <Button fx:id="closeButton" layoutX="335.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+           <graphic>
+               <ImageView fitHeight="10.0" fitWidth="10.0">
+                   <image>
+                       <Image url="/images/close.png" />
+                   </image>
+               </ImageView>
+           </graphic>
+       </Button>
+   </children>
+</AnchorPane>
