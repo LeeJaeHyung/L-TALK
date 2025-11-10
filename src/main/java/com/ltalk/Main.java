@@ -4,19 +4,15 @@ import com.ltalk.controller.LTalkController;
 import com.ltalk.controller.SocketController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.ltalk.controller.MainController.voiceRecieveThread;
 import static com.ltalk.controller.MainController.voiceSendThread;
-import static com.ltalk.service.VoiceService.*;
+import static com.ltalk.service.VoiceService.receiveSocket;
+import static com.ltalk.service.VoiceService.sendSocket;
 import static com.ltalk.util.StageUtil.setStageUtil;
 
 public class Main extends Application {
