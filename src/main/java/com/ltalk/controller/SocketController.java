@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
@@ -122,9 +123,11 @@ public class SocketController {
 
     public static void sendData(Data data) {
         String jsonData = gson.toJson(data);
-        System.out.println("[서버에게 전송 : "+jsonData+"]");
-        ByteBuffer writeBuffer = ByteBuffer.wrap(jsonData.getBytes());
-        channel.write(writeBuffer, writeBuffer, new WriteHandler(channel,writeBuffer));
+        System.out.println("[서버에게 전송 : " + jsonData + "]");
+        // ✅ 반드시 UTF-8로 인코딩
+        byte[] utf8Bytes = jsonData.getBytes(StandardCharsets.UTF_8);
+        ByteBuffer writeBuffer = ByteBuffer.wrap(utf8Bytes);
+        channel.write(writeBuffer, writeBuffer, new WriteHandler(channel, writeBuffer));
     }
 
 
