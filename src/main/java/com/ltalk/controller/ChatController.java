@@ -253,8 +253,6 @@ public class ChatController implements Initializable {
         messagePackage.getChildren().add(messageTimeCountBox);
         imageBox.setAlignment(Pos.TOP_CENTER);
         chatPackage.getChildren().addAll(imageBox,messagePackage);
-        messagePackage.setStyle("-fx-border-color: red;");
-        messageBox.setStyle("-fx-border-color: blue;");
         return chatPackage;
     }
 
