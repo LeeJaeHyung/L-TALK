@@ -33,7 +33,17 @@
 | **IDE**       | IntelliJ |
 | **Database**  | MySQL |
 
+
+
+
+
+
+
+
            
+<ERD>
+
+<img width="4120" height="3268" alt="erd" src="https://github.com/user-attachments/assets/d23c8adb-5949-42fa-bb2c-7ee77cfcde62" />
 
 
 <로그인 화면>
