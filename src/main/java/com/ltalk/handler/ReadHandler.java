@@ -6,6 +6,7 @@ import com.ltalk.entity.ServerResponse;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.nio.charset.StandardCharsets;
 
 public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
 
@@ -56,7 +57,7 @@ public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
                 dataBuffer.flip();
                 byte[] receivedData = new byte[dataBuffer.remaining()];
                 dataBuffer.get(receivedData);
-                String responseJson = new String(receivedData);
+                String responseJson = new String(receivedData, StandardCharsets.UTF_8);
                 System.out.println("서버 응답 JSON: " + responseJson);
 
                 try {
